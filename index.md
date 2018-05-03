@@ -4,7 +4,8 @@ layout: default
 
 我叫袁培超！iOS developer。现在生活在杭州！
 
-[Link to another page](another-page).
+1. [GitPag 配置，apatch配置](another-page).
+
 
 There should be whitespace between paragraphs.
 
@@ -121,3 +122,5 @@ Long, single-line code blocks should not wrap. They should horizontally scroll i
 ```
 The final element.
 ```
+
+
