@@ -4,8 +4,14 @@ layout: default
 
 我叫袁培超！iOS developer。现在生活在杭州！
 
-1. [GitPag 配置，apatch配置](another-page).
+# 1. GitPag 配置，apatch配置
+  [GitPag 配置，apatch配置](another-page).
+# 2. iOS 11 Xcode 适配
+  [iOS 11 Xcode 适配](ios 11 xcode).
+# 3. 私有仓库创建
+  [私有仓库创建](podSpec).
 
+-----
 
 There should be whitespace between paragraphs.
 
