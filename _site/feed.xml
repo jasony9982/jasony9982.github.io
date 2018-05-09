@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2018-05-09T10:19:03+08:00</updated><id>http://localhost:4000/</id><title type="html">仙居茶客</title><subtitle>袁培超的个人博客</subtitle><author><name>Peichao Yuan</name></author><entry><title type="html">私有库创建</title><link href="http://localhost:4000/2018/05/06/podSpec/" rel="alternate" type="text/html" title="私有库创建" /><published>2018-05-06T00:00:00+08:00</published><updated>2018-05-06T00:00:00+08:00</updated><id>http://localhost:4000/2018/05/06/podSpec</id><content type="html" xml:base="http://localhost:4000/2018/05/06/podSpec/">&lt;h1 id=&quot;cocoapodspods-公有库创建&quot;&gt;cocoapodsPods 公有库创建&lt;/h1&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;pod lib create KKLPush&lt;/li&gt;
+  &lt;li&gt;添加文件到 classes中&lt;/li&gt;
+  &lt;li&gt;执行 pod install&lt;/li&gt;
+  &lt;li&gt;推送到远端&lt;/li&gt;
+  &lt;li&gt;添加 tag&lt;/li&gt;
+  &lt;li&gt;检查有效性
+    &lt;blockquote&gt;
+      &lt;p&gt;pod lib lint –allow-warnings&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;blockquote&gt;
+      &lt;p&gt;pod trunk push –allow-warnings&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h1 id=&quot;开课啦cocoapods私有库创建教程&quot;&gt;开课啦CocoaPods私有库创建教程&lt;/h1&gt;
+
+&lt;h3 id=&quot;创建私有-spec-repo&quot;&gt;创建私有 Spec Repo&lt;/h3&gt;
+
+&lt;p&gt;先来说第一步，什么是Spec Repo？它是所有的Pods的一个索引，就是一个容器，所有公开的Pods都在这个里面，它实际是一个Git仓库remote端在GitHub上，但是当你使用了Cocoapods后它会被clone到本地的~/.cocoapods/repos目录下，可以进入到这个目录看到master文件夹就是这个官方的Spec Repo了。&lt;/p&gt;
+
+&lt;p&gt;因此我们需要创建一个类似于master的私有Spec Repo。我们可以创建一个私有的git仓库当做我们自己的Spec Repo。（已经在公司的gitlab上创建好了名叫&lt;a href=&quot;http://git.mistong.com/ios-framework/mistong-repo&quot;&gt;mistong-repo&lt;/a&gt;的私有Spec Repo）&lt;/p&gt;
+
+&lt;p&gt;创建完成之后在Terminal中执行如下命令&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pod repo add mistong ssh://git@git.mistong.com:10022/ios-framework/mistong-repo.git
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;此时如果成功的话进入到~/.cocoapods/repos目录下就可以看到 &lt;code class=&quot;highlighter-rouge&quot;&gt;mistong&lt;/code&gt; 这个目录了。至此我们的pod就能在本地search到 &lt;code class=&quot;highlighter-rouge&quot;&gt;mistong&lt;/code&gt; 里申明的所有库了。&lt;/p&gt;
+
+&lt;h3 id=&quot;创建cocoapods私有库&quot;&gt;创建CocoaPods私有库&lt;/h3&gt;
+
+&lt;p&gt;参考&lt;a href=&quot;http://www.jianshu.com/p/c6c227c0c221&quot;&gt;CocoaPods建立私有仓库 spec repo&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;现在我们来创建一个私有库，以KKLKit为例。&lt;/p&gt;
+
+&lt;p&gt;在Terminal中执行如下命令&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pod lib create KKLKit
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;之后他会问你几个问题，1. 选择开发语言 2.是否需要一个例子工程；3.选择一个测试框架；4.是否基于View测试；5.类的前缀；这几个问题的具体介绍可以去看官方文档，我这里选择的是1.ObjC  ;2.Yes；3.None；4.None；4.KKL。 问完这几个问题他会自动执行pod install命令创建项目并生成依赖。&lt;/p&gt;
+
+&lt;p&gt;_Pods.xcodeproj文件在这里并没有什么作用，可以直接删掉。 其中KKLKit目录仅包含了KKLKit的源文件及图片资源等文件，Example目录则包含了KKLKit相关的demo。我们在编写KKLKit的源码的时候，直接在Example的工程中进行。&lt;/p&gt;
+
+&lt;p&gt;现在我们进入Example目录，打开.workspace文件。
+可以看到，Development Pods目录下的KKLKit目录就是我们的库源码。可以直接修改该目录下的代码。需要注意的是，如果需要在KKLKit中增加或删除文件，在增加文件后，需要在Example的根目录，执行一下&lt;code class=&quot;highlighter-rouge&quot;&gt;pod install &lt;/code&gt; 命令。&lt;/p&gt;
+
+&lt;h3 id=&quot;发布私有库&quot;&gt;发布私有库&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;编辑podspec文件，发布版本库前，需要先配置好podspec文件，具体模板可以参考&lt;a href=&quot;http://git.mistong.com/ios-framework/CKKit/blob/master/CKKit.podspec&quot;&gt;CKKit.podspec&lt;/a&gt;。
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#
+# Be sure to run `pod lib lint CKKit.podspec' to ensure this is a
+# valid spec before submitting.
+#
+# Any lines starting with a # are optional, but their use is encouraged
+# To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html
+#
+Pod::Spec.new do |s|
+s.name             = 'CKKit'
+s.version          = '0.1.11'
+s.summary          = 'CKKit是一个工具类的库'
+# This description is used to generate tags and improve search results.
+#   * Think: What does it do? Why did you write it? What is the focus?
+#   * Try to keep it short, snappy and to the point.
+#   * Write the description between the DESC delimiters below.
+#   * Finally, don't worry about the indent, CocoaPods strips it!
+s.description      = &amp;lt;&amp;lt;-DESC
+CKKit是一个工具类的库，主要包含容器类、通知、数据源相关的管理类及工具类
+                     DESC
+s.homepage         = 'http://git.mistong.com/ios-framework/CKKit'
+# s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
+s.license          = { :type =&amp;gt; 'MIT', :file =&amp;gt; 'LICENSE' }
+s.author           = { 'jiangjunchen' =&amp;gt; 'jiangjunchen@kaike.la' }
+s.source           = { :git =&amp;gt; 'ssh://git@git.mistong.com:10022/ios-framework/CKKit.git', :tag =&amp;gt; s.version.to_s }
+# s.social_media_url = 'https://twitter.com/&amp;lt;TWITTER_USERNAME&amp;gt;'
+# s.module_map = 'CKKit/CKKit.modulemap'
+s.ios.deployment_target = '8.0'
+s.source_files = 'CKKit/Classes/CKKit.h'
+s.subspec 'Base' do |ss|
+    ss.source_files = 'CKKit/Classes/Base/**/*'
+end
+s.subspec 'UIKit' do |ss|
+    ss.source_files = 'CKKit/Classes/UIKit/**/*'
+    ss.dependency 'CKKit/Base'
+end
+# s.source_files = 'CKKit/Classes/**/*'
+# s.resource_bundles = {
+#   'CKKit' =&amp;gt; ['CKKit/Assets/*.png']
+# }
+# s.public_header_files = 'Pod/Classes/**/*.h'
+# s.frameworks = 'UIKit', 'MapKit'
+# s.dependency 'AFNetworking', '~&amp;gt; 2.3'
+end
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;上传后保存会有目录结构&lt;br /&gt;
+&lt;img src=&quot;http://note.youdao.com/yws/res/1892/WEBRESOURCEba18671e1fe66bf403fecade8204e488&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;git commit后，需要打tag，并push到远程。如&lt;/p&gt;
+
+    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git tag &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;first release&quot;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;0.1.0&quot;&lt;/span&gt; 
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git push &lt;span class=&quot;nt&quot;&gt;--tags&lt;/span&gt;     &lt;span class=&quot;c&quot;&gt;#推送tag到远端仓库&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;验证私有库的正确性&lt;/p&gt;
+
+    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pod lib lint &lt;span class=&quot;nt&quot;&gt;--allow-warnings&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+
+    &lt;p&gt;验证成功&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;向Spec Repo提交podspec。 向我们的私有Spec Repo提交podspec只需要一个命令&lt;/p&gt;
+
+    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pod repo push mistong ./KKLKit.podspec &lt;span class=&quot;nt&quot;&gt;--allow-warnings&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+    &lt;p&gt;其中，&lt;code class=&quot;highlighter-rouge&quot;&gt;mistong&lt;/code&gt;就是我们的私有Spec Repo，&lt;code class=&quot;highlighter-rouge&quot;&gt;./KKLKit.podspec&lt;/code&gt;则是我们私有库的描述文件路径&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;注如果podspec的依赖包含你自己的私有库那么验证命令后面要填写你所依赖的那个私有库的连接地址和cocoapods的默认地址&quot;&gt;注：如果podspec的依赖包含你自己的私有库。那么验证命令后面要填写你所依赖的那个私有库的连接地址和cocoapods的默认地址&lt;/h4&gt;
+
+&lt;p&gt;如：$ pod lib lint –sources=’ssh://git@git.mistong.com:10022/ios-framework/mistong-repo.git,https://github.com/CocoaPods/Specs’ –use-libraries –allow-warnings&lt;/p&gt;
+
+&lt;h3 id=&quot;安装私有库&quot;&gt;安装私有库&lt;/h3&gt;
+
+&lt;p&gt;安装私有库需要在Podfile文件顶部申明一下我们的私有Repo Spec地址，以及pod公共的Repo Spec地址。 再在podfile中通过&lt;code class=&quot;highlighter-rouge&quot;&gt;pod 'CKKit', '~&amp;gt; 0.0.1'&lt;/code&gt;来申明私有库&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'ssh://git@git.mistong.com:10022/ios-framework/mistong-repo.git'&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'https://github.com/CocoaPods/Specs.git'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;关于resources&quot;&gt;&lt;a href=&quot;http://blog.xianqu.org/2015/08/pod-resources/&quot;&gt;关于Resources&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;新版的cocoapods推荐在podspec使用&lt;code class=&quot;highlighter-rouge&quot;&gt;resource_bundle&lt;/code&gt;方式引用资源文件：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;s.resource_bundle = {'LibName' =&amp;gt; ['LibName/*.png']}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;理论上一个 bundle 里可以有一个 asset catalog。Xcode 最后会把它们编译成 &lt;code class=&quot;highlighter-rouge&quot;&gt;Assets.car&lt;/code&gt; 文件。但是使用&lt;code class=&quot;highlighter-rouge&quot;&gt;resource_bundle&lt;/code&gt;这种方式对&lt;code class=&quot;highlighter-rouge&quot;&gt;Image.xcassets&lt;/code&gt;支持不太好，会出现找不到图片的情况。所以增对图片资源，要么不使用xcassets，直接将图片放到文件目录中；要么使用podspec的resources方式添加图片的xcassets。&lt;/p&gt;
+
+&lt;p&gt;我这里推荐采用resources方式添加图片资源，因为pdf格式的图片需要放到xcassets中才能直接使用：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;s.resources = 'XHXUser/Assets/**/*'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;那么在代码中可以用如下方式获取pod库中的图片资源:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;NSBundle *bundle = [NSBundle bundleForClass:[XHXUserAPI class]];
+UIImage *image = [UIImage imageNamed:@&quot;LoginLogo&quot; inBundle:bundle compatibleWithTraitCollection:nil];
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;当然，你可以在pod库内部创建一个宏&lt;code class=&quot;highlighter-rouge&quot;&gt;ModuleImage&lt;/code&gt;，用于获取私有库内部的图片:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;// 根据图片名，获取模块内部的图片
+#define ModuleImage(name) [UIImage imageNamed:(name) inBundle:[NSBundle bundleForClass:[self class]] compatibleWithTraitCollection:nil]
+&lt;/code&gt;&lt;/pre&gt;</content><author><name>Peichao Yuan</name></author><summary type="html">cocoapodsPods 公有库创建</summary></entry><entry><title type="html">GitPage, apatch</title><link href="http://localhost:4000/2018/05/03/apatch-gitpage/" rel="alternate" type="text/html" title="GitPage, apatch" /><published>2018-05-03T00:00:00+08:00</published><updated>2018-05-03T00:00:00+08:00</updated><id>http://localhost:4000/2018/05/03/apatch-gitpage</id><content type="html" xml:base="http://localhost:4000/2018/05/03/apatch-gitpage/">&lt;p&gt;记录一些常见问题的细节备份&lt;/p&gt;
+
+&lt;h3 id=&quot;遇到恼人的权限安装或者删除的权限问题的时候在命令中添加-n-usrlocalbin-即可执行&quot;&gt;遇到恼人的权限安装或者删除的权限问题的时候在命令中添加&lt;code class=&quot;highlighter-rouge&quot;&gt;-n /usr/local/bin&lt;/code&gt; 即可执行&lt;/h3&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo gem install -n /usr/local/bin cocoapods
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h3 id=&quot;gitpage-本地调试&quot;&gt;GitPage 本地调试&lt;/h3&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//首次本地安装jelly
+sudo gem install -n /usr/local/bin jekyll bundler
+// 启动本地jeklly 环境
+jeklly serve
+// 访问
+localhost:4000 
+//停止jeklly服务
+ctrl + c
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;mac-本地apatch服务开启&quot;&gt;mac 本地Apatch服务开启&lt;/h3&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 启动Apache服务
+sudo apachectl start
+// 重启Apache服务
+sudo apachectl restart
+// 停止Apache服务
+sudo apachectl stop
+// 查看Apache版本
+httpd -v
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h4 id=&quot;step-1&quot;&gt;step 1&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#LoadModule rewrite_module libexec/apache2/mod_rewrite.so
+// uncommet this line
+LoadModule php7_module libexec/apache2/libphp7.so
+#LoadModule perl_module libexec/apache2/mod_perl.so
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h4 id=&quot;step-2&quot;&gt;step 2&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#DocumentRoot &quot;/Library/WebServer/Documents&quot;
+#&amp;lt;Directory &quot;/Library/WebServer/Documents&quot;&amp;gt;
+DocumentRoot &quot;/Users/jason/Sites&quot;
+&amp;lt;Directory &quot;/Users/jason/Sites&quot;&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;step-3&quot;&gt;step 3&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// Options FollowSymLinks Multiviews
+ Options Indexes FollowSymLinks Multiviews
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;和谐版的alfred-3-在每次开机后都会提示是否允许访问通讯录的弹窗&quot;&gt;和谐版的Alfred 3 在每次开机后，都会提示“是否允许访问通讯录”的弹窗&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;sudo codesign -f -d -s - /Applications/Alfred\ 3.app/Contents/Frameworks/Alfred\ Framework.framework/Versions/A/Alfred\ Framework&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;a href=&quot;./&quot;&gt;返回&lt;/a&gt;&lt;/p&gt;</content><author><name>Peichao Yuan</name></author><summary type="html">记录一些常见问题的细节备份</summary></entry><entry><title type="html">Xcode 9 iOS 11适配</title><link href="http://localhost:4000/2018/05/02/ios-11-Xcode/" rel="alternate" type="text/html" title="Xcode 9 iOS 11适配" /><published>2018-05-02T00:00:00+08:00</published><updated>2018-05-02T00:00:00+08:00</updated><id>http://localhost:4000/2018/05/02/ios-11-Xcode</id><content type="html" xml:base="http://localhost:4000/2018/05/02/ios-11-Xcode/">&lt;p&gt;iOS 11, Xcode 9 的一些适配问题&lt;/p&gt;
+
+&lt;div id=&quot;detailbody&quot; class=&quot;field_body&quot;&gt;
+                    &lt;p&gt;&lt;span style=&quot;font-size: 20px;&quot;&gt;&lt;strong&gt;一、前言&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;iOS11发布也有一段时间了，每次版本升级，相关的适配工作当然是下个版本的核心工作之一。而且这次iOS11的更新，相对于iOS10的更新来说，改动点还是比较多的。除了iOS11系统的更新之外，iPhoneX刘海的打理工作也是必不可少。以前我们总是庆幸作为iOS开发者，不必像Android开发者需要考虑各种不同机型的适配问题。但是现在，随着iPhone各种历史版本的存在，各种花式的新版本产生，不同版本之间的适配问题，也是未来我们作为iOS开发者必然要考虑的重要问题之一。&lt;/p&gt;&lt;p&gt;这次我主要负责我们这边两款App(滴滴代驾司机端+驾管App)iOS11&amp;amp;iPhoneX适配工作。中间也躺过很多坑，一一记录了下来写成这篇文章，既是对自己工作的一次总结，也可以分享给其他iOS开发者，能够让大家少趟一些坑。&lt;/p&gt;&lt;p&gt;本文将分为三个部分，分别从三方库适配、UI适配、权限适配、补充知识等方面分别进行展开。&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 20px;&quot;&gt;&lt;strong&gt;二、三方库适配问题。&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;2.1 CocoaLumberjack 编译出错&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;font-size: 12px; color: rgb(127, 127, 127);&quot;&gt;&lt;strong&gt;&lt;img src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521771491256554.png&quot; title=&quot;1521771491256554.png&quot; _src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521771491256554.png&quot; alt=&quot;1.png&quot; /&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;font-size: 12px; color: rgb(127, 127, 127);&quot;&gt;CocoaLumberjack编译报错&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;问题原因：&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;从错误提示可以看出在Xcode9中os_log_error的第二个参数format必须要为不可变的string类型，而不是char*。&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;解决方案：&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;我们只要改成如下形式就可以了&lt;/p&gt;&lt;div&gt;&lt;div id=&quot;highlighter_584187&quot; class=&quot;syntaxhighlighter  as3&quot;&gt;&lt;table border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;div class=&quot;line number1 index0 alt2&quot;&gt;1&lt;/div&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;div class=&quot;line number1 index0 alt2&quot;&gt;&lt;code class=&quot;as3 plain&quot;&gt;os_log_error(OS_LOG_DEFAULT,&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 string&quot;&gt;&quot;%s&quot;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;,&amp;nbsp;msg);&lt;/code&gt;&lt;/div&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;&lt;/div&gt;&lt;p&gt;CocoaLumberjack的作者也在[issue883](&lt;a href=&quot;https://link.jianshu.com/?t=https://github.com/Co&quot; target=&quot;_blank&quot; _href=&quot;https://link.jianshu.com/?t=https://github.com/Co&quot;&gt;https://github.com/Co coaLumberjack/CocoaLumberjack/issues/883&lt;/a&gt;)中解决了该问题。如果你的工程是pod依赖的话，将pod版本升级到3.3.0版本即可。&lt;/p&gt;&lt;p&gt;&lt;strong&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;2.2 WebViewJavascriptBridge崩溃处理&lt;/span&gt;&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;我们代驾司机端web容器使用的是WKWebView，jsBridge使用的是WebViewJavascriptBridge这个三方库，更新到Xcode9之后，只要进入WKWebView容器，就会产生如下crash:&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521771550751368.png&quot; title=&quot;1521771550751368.png&quot; _src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521771550751368.png&quot; alt=&quot;1.png&quot; /&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;font-size: 12px; color: rgb(127, 127, 127);&quot;&gt;WebViewJavascriptBridge crash&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;问题原因：&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;当你使用WKWebView作为你的H5容器的时候，WKNavigationDelegate有个回调就是&lt;/p&gt;&lt;div&gt;&lt;div id=&quot;highlighter_225402&quot; class=&quot;syntaxhighlighter  as3&quot;&gt;&lt;table border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;div class=&quot;line number1 index0 alt2&quot;&gt;1&lt;/div&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;div class=&quot;line number1 index0 alt2&quot;&gt;&lt;code class=&quot;as3 plain&quot;&gt;-&amp;nbsp;(&lt;/code&gt;&lt;code class=&quot;as3 keyword&quot;&gt;void&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;)webView:(WKWebView&amp;nbsp;*)webView&amp;nbsp;decidePolicyForNavigationAction:(WKNavigationAction&amp;nbsp;*)navigationAction&amp;nbsp;decisionHandler:(&lt;/code&gt;&lt;code class=&quot;as3 keyword&quot;&gt;void&lt;/code&gt;&amp;nbsp;&lt;code class=&quot;as3 plain&quot;&gt;(^)(WKNavigationActionPolicy))decisionHandler;&lt;/code&gt;&lt;/div&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;&lt;/div&gt;&lt;p&gt;这个回调主要负责根据webView、navigationAction相关信息决定这次跳转是否可以继续进行。调用decisionHandler(WKNavigationActionPolicyAllow);响应这次跳转请求。调用decisionHandler(WKNavigationActionPolicyCancel);就是不响应这次跳转请求。&lt;/p&gt;&lt;p&gt;查看WebViewJavascriptBridge源码可以看出，在WKWebViewJavascriptBridge.m文件中&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521771604832877.png&quot; title=&quot;1521771604832877.png&quot; _src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521771604832877.png&quot; alt=&quot;1.png&quot; /&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;font-size: 12px; color: rgb(127, 127, 127);&quot;&gt;WKVebViewCrash.png&lt;/span&gt;&lt;/p&gt;&lt;p&gt;在Xcode9中，如果连续看了两次调用decisionHandler方法就会crash。这个问题在之前版本的Xcode均是没有问题的。&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;解决方案：&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;ul class=&quot; list-paddingleft-2&quot;&gt;&lt;li&gt;&lt;p&gt;方案一：修改源码&lt;/p&gt;&lt;p&gt;在上面代码的149行和150行之间添加return;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;方案二：pod依赖，原作者没有修改此问题，无法修改源码，也可以在业务代码中进行规避。&lt;/p&gt;&lt;p&gt;在你自己业务代码的对应对调中添加排除代码，如下：&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521771633371153.png&quot; title=&quot;1521771633371153.png&quot; _src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521771633371153.png&quot; alt=&quot;1.png&quot; /&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;font-size: 12px; color: rgb(127, 127, 127);&quot;&gt;WKWebViewCrash2.png&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;2.3 LumberjackConsole UI适配&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;&lt;img src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521771742682266.png&quot; title=&quot;1521771742682266.png&quot; _src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521771742682266.png&quot; alt=&quot;1.png&quot; /&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;问题原因:&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;iOS7之后，如何你设置self.edgesForExtendedLayout = UIRectEdgeNone的话,系统通过设置UIViewController的automaticallyAdjustsScrollViewInsets属性来自动调整UIScrollView的contentInset，使UIscrollView能够呈现在我们的可是范围之内，而不会被navBar挡住。这个属性在iOS11中被废弃掉了，在iOS11中代替该属性功能的则是UIScrollView类中的contentInsetAdjustmentBehavior和adjustedContentInset属性.在iOS11中用来决定scrollView超出安全区域与边缘距离的属性是adjustedContentInset而不是contentInset。当scrollView超出安全区域时系统会自动调整SafeAreaInsets值，进而影&lt;/p&gt;&lt;p&gt;响 adjustedContentInset，所以导致scrollView下移20pt或者64pt。当使用自定义的 navigationbar，并且scrollView的frame超出安全区域，SafeAreaInsets为(20,0,0,0);当使用系统的navigationbar，SafeAreaInsets为(64,0,0,0)。&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;解决方案:&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;在UIScrollView或者UITableView初始化的地方，加入如下代码即可。&lt;/p&gt;&lt;p&gt;针对LumberjackConsole这个开源库，我们可以在PTEConsoleTableView.m文件中的commonInit最后加入如下代码即可。&lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;div&gt;&lt;div id=&quot;highlighter_459276&quot; class=&quot;syntaxhighlighter  as3&quot;&gt;&lt;table border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;div class=&quot;line number1 index0 alt2&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line number2 index1 alt1&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line number3 index2 alt2&quot;&gt;3&lt;/div&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;div class=&quot;line number1 index0 alt2&quot;&gt;&lt;code class=&quot;as3 keyword&quot;&gt;if&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;([self&amp;nbsp;respondsToSelector:@selector(setContentInsetAdjustmentBehavior:)]){&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number2 index1 alt1&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;[self&amp;nbsp;setContentInsetAdjustmentBehavior:UIScrollViewContentInsetAdjustmentNever];&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number3 index2 alt2&quot;&gt;&lt;code class=&quot;as3 plain&quot;&gt;}&lt;/code&gt;&lt;/div&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;&lt;/div&gt;&lt;p&gt;&lt;span style=&quot;font-size: 20px;&quot;&gt;&lt;strong&gt;三、UI适配&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;3.1 NavBar中右上角的customView产生偏移&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;&lt;img src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521771807148487.png&quot; title=&quot;1521771807148487.png&quot; _src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521771807148487.png&quot; alt=&quot;1.png&quot; /&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;问题原因:&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;在iOS11中，新的导航视图，使用了AutoLayout布局。而我们这边右上角的两个按钮组合成一个customView，然后把这个customView设置给setRightBarButtonItems而来。customView内部都是frame布局，所以在自动布局下面出错。&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;解决方案:&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;NavBar中的customView里面针对iOS11，均要采用自动布局。&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521771889744285.png&quot; title=&quot;1521771889744285.png&quot; _src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521771889744285.png&quot; alt=&quot;1.png&quot; /&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;3.2 NavBar中自定义TitleView产生偏移&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;&lt;img src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521771925217984.png&quot; title=&quot;1521771925217984.png&quot; _src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521771925217984.png&quot; alt=&quot;1.png&quot; /&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;问题原因:&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;同上&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;解决方案:&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;同上&lt;/p&gt;&lt;p&gt;这里需要注意一点，自动布局的UI是延迟设置frame的。如果aView采用自动布局。然后你马上调用它的aView.bounds是不正确的。&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;3.3 NavBar中按钮的响应区域都变小了。&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521771969320121.png&quot; title=&quot;1521771969320121.png&quot; _src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521771969320121.png&quot; alt=&quot;1.png&quot; /&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;问题原因:&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;iOS11之前，虽然我们设置了NavBar上每一个[btn sizeToFit]。苹果依然会帮我们把每一个按钮的点击区域扩大，可以点击区域如上图绿色区域所示。但是在iOS11中，你的按钮的bounds为多大，那你的点击区域就只有多大。估计这个改动也与这次NavBar的大概有关系。&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;解决方案:&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;扩大每一个btn的bounds，而不要使用sizeToFit方法。&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;3.4 NavBar的BarButtonItem无法贴边。有（非plus手机16pt，plus手机20pt）的区域浪费。造成UI偏移，并且最左侧和最右侧区域无法点击。&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521772008284264.png&quot; title=&quot;1521772008284264.png&quot; _src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521772008284264.png&quot; alt=&quot;1.png&quot; /&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;问题原因:&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;这个UINavigationBarContentView平铺在导航栏中作为iOS11的各个按钮的父视图,该视图的所有的子视图都会有一个layoutMargins被占用,也就是系统调整的占位。&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;解决方案:&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;去掉系统默认占位。&lt;/p&gt;&lt;p&gt;系统并没有提供我们直接去掉系统默认占位的方法，那怎么做呢？&lt;/p&gt;&lt;p&gt;我们新建一个UINavigationBar的分类，hook住UINavigationBar的layoutSubviews方法。然后遍历View，重新设置layoutMargin约束。&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521772030450415.png&quot; title=&quot;1521772030450415.png&quot; _src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521772030450415.png&quot; alt=&quot;1.png&quot; /&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;color: rgb(127, 127, 127); font-size: 12px;&quot;&gt;重新设置layoutMargin约束&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;3.5 UITableView 默认开启Self-Sizing，导致UI显示有问题。&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521772063265490.png&quot; title=&quot;1521772063265490.png&quot; _src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521772063265490.png&quot; alt=&quot;1.png&quot; /&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;问题原因:&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;在iOS11中UITableView会默认使 Self-Sizing,这会导致tableView&lt;/p&gt;&lt;p&gt;的 estimatedRowHeight 、 estimatedSectionHeaderHeight 、 estimatedSectionFooterHeight 的高度估算属性由默认的0变成 UITableViewAutomaticDimension ,reloadData时可能会导致最后显示的contentSize与预想的不一致;&lt;/p&gt;&lt;p&gt;同时在iOS11中如果不实现 -tableView: viewForHeaderInSection: 和 tableView: viewForFooterInSection: 方法，则 -tableView: heightForHeaderInSection: 和 - tableView: heightForFooterInSection: 不会被调用，而iOS11之前则没问题。上述都可能会导致界面出现错乱。&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;解决方案:&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;单独关闭摸一个UITableView的Self-Sizing。&lt;/p&gt;&lt;div&gt;&lt;div id=&quot;highlighter_757318&quot; class=&quot;syntaxhighlighter  as3&quot;&gt;&lt;table border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;div class=&quot;line number1 index0 alt2&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line number2 index1 alt1&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line number3 index2 alt2&quot;&gt;3&lt;/div&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;div class=&quot;line number1 index0 alt2&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;_tableView.estimatedRowHeight&amp;nbsp;=&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 value&quot;&gt;0&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;.;&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number2 index1 alt1&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;_tableView.estimatedSectionFooterHeight&amp;nbsp;=&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 value&quot;&gt;0&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;.;&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number3 index2 alt2&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;_tableView.estimatedSectionHeaderHeight&amp;nbsp;=&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 value&quot;&gt;0&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;.;&lt;/code&gt;&lt;/div&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;&lt;/div&gt;&lt;p&gt;关闭所有的UIScroolView、UITableView和UICollectionView的Self-Sizing：&lt;/p&gt;&lt;div&gt;&lt;div id=&quot;highlighter_988978&quot; class=&quot;syntaxhighlighter  as3 &quot;&gt;&lt;table border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;div class=&quot;line number1 index0 alt2&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line number2 index1 alt1&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line number3 index2 alt2&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line number4 index3 alt1&quot;&gt;4&lt;/div&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;div class=&quot;line number1 index0 alt2&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;UIScrollView.appearance.contentInsetAdjustmentBehavior&amp;nbsp;=&amp;nbsp;UIScrollViewContentInsetAdjustmentNever;&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number2 index1 alt1&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;UITableView.appearance.estimatedRowHeight&amp;nbsp;=&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 value&quot;&gt;0&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;;&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number3 index2 alt2&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;UITableView.appearance.estimatedSectionFooterHeight&amp;nbsp;=&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 value&quot;&gt;0&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;;&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number4 index3 alt1&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;UITableView.appearance.estimatedSectionHeaderHeight&amp;nbsp;=&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 value&quot;&gt;0&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;;&lt;/code&gt;&lt;/div&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;&lt;/div&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;3.6 keyWindow获取错误, 导致UI问题。&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521772110791559.png&quot; title=&quot;1521772110791559.png&quot; _src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521772110791559.png&quot; alt=&quot;1.png&quot; /&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;问题原因:&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;机器猫图标是一个UIWindow，windowLevel级别比UIWindowLevelStatusBar还高，所以可以常驻UI最上方。第一次进入该页面，点击“更多”，弹出popView，点击收藏，弹出系统UIAlertView，此时UIAlertView变成了keyWindow。当UIAlertView消失的时候，keyWindow会被谁接管呢？&lt;/p&gt;&lt;p&gt;iOS11之前，弹出UIAlertView之前的keyWindow是[[UIApplication sharedApplication].delegate window]，那么消失的时候，keyWindow还是[[UIApplication sharedApplication].delegate window]。&lt;/p&gt;&lt;p&gt;iOS11, 弹出UIAlertView之前的keyWindow是[[UIApplication sharedApplication].delegate window]，那么消失的时候，keyWindow变成z轴最高的UIWindow，即变成了机器猫那个window。所以导致popView被添加到机器猫window中，造成UI样式问题。&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;解决方案:&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;重写自定义UIWindow的becomeKeyWindow的方法，每次自定义window将会变为keyWindow的时候，把keyWindow改成[[UIApplication sharedApplication].delegate window]。&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;&lt;/span&gt;&lt;/p&gt;&lt;div&gt;&lt;div id=&quot;highlighter_215343&quot; class=&quot;syntaxhighlighter  as3&quot;&gt;&lt;table border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;div class=&quot;line number1 index0 alt2&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line number2 index1 alt1&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line number3 index2 alt2&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line number4 index3 alt1&quot;&gt;4&lt;/div&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;div class=&quot;line number1 index0 alt2&quot;&gt;&lt;code class=&quot;as3 plain&quot;&gt;-&amp;nbsp;(&lt;/code&gt;&lt;code class=&quot;as3 keyword&quot;&gt;void&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;)becomeKeyWindow{&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number2 index1 alt1&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;UIWindow&amp;nbsp;*appWindow&amp;nbsp;=&amp;nbsp;[[UIApplication&amp;nbsp;sharedApplication].delegate&amp;nbsp;window];&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number3 index2 alt2&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;[appWindow&amp;nbsp;makeKeyWindow];&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number4 index3 alt1&quot;&gt;&lt;code class=&quot;as3 plain&quot;&gt;}&lt;/code&gt;&lt;/div&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;&lt;/div&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;3.7 状态栏高度写死为20pt，导致在iPhoneX上面遮挡住statusBar。&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521772153502038.png&quot; title=&quot;1521772153502038.png&quot; _src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521772153502038.png&quot; alt=&quot;1.png&quot; /&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;问题原因:&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;iPhoneX上的statusBar的高度为44pt，跟其他iPhone型号的20pt不一样。所以以后我们在以statusBar为定位点的时候，不能写死20pt。而要使用[UIApplication sharedApplication].statusBarFrame.size.height来获取，为了方便，可以定义为宏，放到pch文件中，如下：&lt;/p&gt;&lt;div&gt;&lt;div id=&quot;highlighter_793724&quot; class=&quot;syntaxhighlighter  as3&quot;&gt;&lt;table border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;div class=&quot;line number1 index0 alt2&quot;&gt;1&lt;/div&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;div class=&quot;line number1 index0 alt2&quot;&gt;&lt;code class=&quot;as3 plain&quot;&gt;#define&amp;nbsp;kApplicationStatusBarHeight&amp;nbsp;&amp;nbsp;[UIApplication&amp;nbsp;sharedApplication].statusBarFrame.size.height&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 comments&quot;&gt;//状态栏的高度&lt;/code&gt;&lt;/div&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;&lt;/div&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;解决方案:&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;状态栏高度定位的时候不要写死20，要使用[UIApplication sharedApplication].statusBarFrame.size.height来获取。&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;补充&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;iOS11之前导航栏默认高度为64pt(这里高度指statusBar + NavigationBar)，iOS11之后如果设置 prefersLargeTitles = YES则为96pt，默认情况下还是64pt，但在iPhoneX上由于刘海的出现 statusBar由以前的20pt变成 44pt，所以iPhoneX上高度变为88pt，如果项目里隐藏了导航栏加了自定义按钮之类的，这里需要注意适配一下。&lt;/p&gt;&lt;p&gt;&lt;strong&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;3.8 通过遍历statusBar的subviews中的UIStatusBarDataNetworkItemView获取网络状态在iPhoneX上会crash。&lt;/span&gt;&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;问题原因:&lt;/p&gt;&lt;p&gt;之前我们采用遍历statusBar，获取UIStatusBarDataNetworkItemView实例，再获取网络状态的。代码如下：&lt;/p&gt;&lt;div&gt;&lt;div id=&quot;highlighter_95431&quot; class=&quot;syntaxhighlighter  as3&quot;&gt;&lt;table border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;div class=&quot;line number1 index0 alt2&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line number2 index1 alt1&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line number3 index2 alt2&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line number4 index3 alt1&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line number5 index4 alt2&quot;&gt;5&lt;/div&gt;&lt;div class=&quot;line number6 index5 alt1&quot;&gt;6&lt;/div&gt;&lt;div class=&quot;line number7 index6 alt2&quot;&gt;7&lt;/div&gt;&lt;div class=&quot;line number8 index7 alt1&quot;&gt;8&lt;/div&gt;&lt;div class=&quot;line number9 index8 alt2&quot;&gt;9&lt;/div&gt;&lt;div class=&quot;line number10 index9 alt1&quot;&gt;10&lt;/div&gt;&lt;div class=&quot;line number11 index10 alt2&quot;&gt;11&lt;/div&gt;&lt;div class=&quot;line number12 index11 alt1&quot;&gt;12&lt;/div&gt;&lt;div class=&quot;line number13 index12 alt2&quot;&gt;13&lt;/div&gt;&lt;div class=&quot;line number14 index13 alt1&quot;&gt;14&lt;/div&gt;&lt;div class=&quot;line number15 index14 alt2&quot;&gt;15&lt;/div&gt;&lt;div class=&quot;line number16 index15 alt1&quot;&gt;16&lt;/div&gt;&lt;div class=&quot;line number17 index16 alt2&quot;&gt;17&lt;/div&gt;&lt;div class=&quot;line number18 index17 alt1&quot;&gt;18&lt;/div&gt;&lt;div class=&quot;line number19 index18 alt2&quot;&gt;19&lt;/div&gt;&lt;div class=&quot;line number20 index19 alt1&quot;&gt;20&lt;/div&gt;&lt;div class=&quot;line number21 index20 alt2&quot;&gt;21&lt;/div&gt;&lt;div class=&quot;line number22 index21 alt1&quot;&gt;22&lt;/div&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;div class=&quot;line number1 index0 alt2&quot;&gt;&lt;code class=&quot;as3 plain&quot;&gt;+&amp;nbsp;(NSNumber&amp;nbsp;*)&amp;nbsp;dataNetworkTypeFromStatusBar&amp;nbsp;{&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number2 index1 alt1&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;UIApplication&amp;nbsp;*app&amp;nbsp;=&amp;nbsp;[UIApplication&amp;nbsp;sharedApplication];&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number3 index2 alt2&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;NSArray&amp;nbsp;*subviews&amp;nbsp;=&amp;nbsp;[[[app&amp;nbsp;valueForKey:@&lt;/code&gt;&lt;code class=&quot;as3 string&quot;&gt;&quot;statusBar&quot;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;]&amp;nbsp;valueForKey:@&lt;/code&gt;&lt;code class=&quot;as3 string&quot;&gt;&quot;foregroundView&quot;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;]&amp;nbsp;subviews];&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number4 index3 alt1&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;NSNumber&amp;nbsp;*dataNetworkItemView&amp;nbsp;=&amp;nbsp;nil;&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number5 index4 alt2&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;line number6 index5 alt1&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;@&lt;/code&gt;&lt;code class=&quot;as3 keyword&quot;&gt;try&lt;/code&gt;&amp;nbsp;&lt;code class=&quot;as3 plain&quot;&gt;{&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number7 index6 alt2&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 keyword&quot;&gt;if&lt;/code&gt;&amp;nbsp;&lt;code class=&quot;as3 plain&quot;&gt;([subviews&amp;nbsp;count]&amp;nbsp;&amp;gt;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 value&quot;&gt;0&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;)&amp;nbsp;{&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number8 index7 alt1&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 keyword&quot;&gt;for&lt;/code&gt;&amp;nbsp;&lt;code class=&quot;as3 plain&quot;&gt;(id&amp;nbsp;subview&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 keyword&quot;&gt;in&lt;/code&gt;&amp;nbsp;&lt;code class=&quot;as3 plain&quot;&gt;subviews)&amp;nbsp;{&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number9 index8 alt2&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 keyword&quot;&gt;if&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;([subview&amp;nbsp;isKindOfClass:[NSClassFromString(@&lt;/code&gt;&lt;code class=&quot;as3 string&quot;&gt;&quot;UIStatusBarDataNetworkItemView&quot;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;)&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 color3&quot;&gt;class&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;]])&amp;nbsp;{&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number10 index9 alt1&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;dataNetworkItemView&amp;nbsp;=&amp;nbsp;subview;&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number11 index10 alt2&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 keyword&quot;&gt;break&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;;&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number12 index11 alt1&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;}&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number13 index12 alt2&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;}&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number14 index13 alt1&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;}&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number15 index14 alt2&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;}&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number16 index15 alt1&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;@&lt;/code&gt;&lt;code class=&quot;as3 keyword&quot;&gt;catch&lt;/code&gt;&amp;nbsp;&lt;code class=&quot;as3 plain&quot;&gt;(NSException&amp;nbsp;*exception)&amp;nbsp;{&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number17 index16 alt2&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;}&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number18 index17 alt1&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;@&lt;/code&gt;&lt;code class=&quot;as3 keyword&quot;&gt;finally&lt;/code&gt;&amp;nbsp;&lt;code class=&quot;as3 plain&quot;&gt;{&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number19 index18 alt2&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;}&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number20 index19 alt1&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;line number21 index20 alt2&quot;&gt;&lt;code class=&quot;as3 spaces&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 keyword&quot;&gt;return&lt;/code&gt;&amp;nbsp;&lt;code class=&quot;as3 plain&quot;&gt;[dataNetworkItemView&amp;nbsp;valueForKey:@&lt;/code&gt;&lt;code class=&quot;as3 string&quot;&gt;&quot;dataNetworkType&quot;&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;];&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number22 index21 alt1&quot;&gt;&lt;code class=&quot;as3 plain&quot;&gt;}&lt;/code&gt;&lt;/div&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;&lt;/div&gt;&lt;p&gt;但是在iphoneX的statusBar的内部结构已经改变，不能根据遍历获取UIStatusBarDataNetworkItemView的状态获取网络状态状态。&lt;/p&gt;&lt;p&gt;可以通过&lt;strong&gt;po [statusBar recursiveDescription]&lt;/strong&gt;打印出来iphoneX内部结构了，可以看出变化非常的大。&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;解决方案:&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;使用AFNetworking中的AFNetworkReachabilityManager类，或者使用&lt;a href=&quot;https://link.jianshu.com/?t=https://github.com/tonymillion/Reachability&quot; target=&quot;_blank&quot; _href=&quot;https://link.jianshu.com/?t=https://github.com/tonymillion/Reachability&quot;&gt;Reachability库&lt;/a&gt;获取网络连接状态。&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 20px;&quot;&gt;&lt;strong&gt;四、权限适配&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;4.1 无法获取定位信息，第一次打开app也无法弹出定位权限提示框&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;问题原因:&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;iOS11 定位相关的权限做了更改，在iOS11上使用了新的定位权限key。&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;解决方案:&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;如果原来申请的权限是始终允许NSLocationAlwaysUsageDescription，那么需要在保留原来的key的基础上增加NSLocationWhenInUseUsageDescription和NSLocationAlwaysAndWhenInUsageDescription。&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 20px;&quot;&gt;&lt;strong&gt;五、其他一些补充&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;5.1 如何判断该设备是不是iPhoneX&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;&lt;img src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521772277385416.png&quot; title=&quot;1521772277385416.png&quot; _src=&quot;http://cc.cocimg.com/api/uploads//20180323/1521772277385416.png&quot; alt=&quot;1.png&quot; /&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;&lt;strong&gt;5.2 一些常用的宏定义&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;div&gt;&lt;div id=&quot;highlighter_427004&quot; class=&quot;syntaxhighlighter  as3&quot;&gt;&lt;table border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;div class=&quot;line number1 index0 alt2&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line number2 index1 alt1&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line number3 index2 alt2&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line number4 index3 alt1&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line number5 index4 alt2&quot;&gt;5&lt;/div&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;div class=&quot;container&quot;&gt;&lt;div class=&quot;line number1 index0 alt2&quot;&gt;&lt;code class=&quot;as3 plain&quot;&gt;#define&amp;nbsp;IS_IPHONE_X&amp;nbsp;[KDDeviceHelper&amp;nbsp;is_iPhone_X]&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number2 index1 alt1&quot;&gt;&lt;code class=&quot;as3 plain&quot;&gt;#define&amp;nbsp;IPHONE_NAVIGATIONBAR_HEIGHT&amp;nbsp;&amp;nbsp;(IS_IPHONE_X&amp;nbsp;?&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 value&quot;&gt;88&lt;/code&gt;&amp;nbsp;&lt;code class=&quot;as3 plain&quot;&gt;:&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 value&quot;&gt;64&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;)&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number3 index2 alt2&quot;&gt;&lt;code class=&quot;as3 plain&quot;&gt;#define&amp;nbsp;IPHONE_STATUSBAR_HEIGHT&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;(IS_IPHONE_X&amp;nbsp;?&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 value&quot;&gt;44&lt;/code&gt;&amp;nbsp;&lt;code class=&quot;as3 plain&quot;&gt;:&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 value&quot;&gt;20&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;)&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number4 index3 alt1&quot;&gt;&lt;code class=&quot;as3 plain&quot;&gt;#define&amp;nbsp;IPHONE_SAFEBOTTOMAREA_HEIGHT&amp;nbsp;(IS_IPHONE_X&amp;nbsp;?&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 value&quot;&gt;34&lt;/code&gt;&amp;nbsp;&lt;code class=&quot;as3 plain&quot;&gt;:&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 value&quot;&gt;0&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;)&lt;/code&gt;&lt;/div&gt;&lt;div class=&quot;line number5 index4 alt2&quot;&gt;&lt;code class=&quot;as3 plain&quot;&gt;#define&amp;nbsp;IPHONE_TOPSENSOR_HEIGHT&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;(IS_IPHONE_X&amp;nbsp;?&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 value&quot;&gt;32&lt;/code&gt;&amp;nbsp;&lt;code class=&quot;as3 plain&quot;&gt;:&amp;nbsp;&lt;/code&gt;&lt;code class=&quot;as3 value&quot;&gt;0&lt;/code&gt;&lt;code class=&quot;as3 plain&quot;&gt;)&lt;/code&gt;&lt;/div&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;&lt;/div&gt;&lt;p&gt;&lt;span style=&quot;font-size: 20px;&quot;&gt;&lt;strong&gt;六、参考文献&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;ul class=&quot; list-paddingleft-2&quot;&gt;&lt;li&gt;&lt;p&gt;&lt;a href=&quot;https://www.jianshu.com/p/204455df16d6&quot; target=&quot;_blank&quot; _href=&quot;https://www.jianshu.com/p/204455df16d6&quot;&gt;iOS11&amp;amp;iPhone X适配.pdf&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;a href=&quot;https://link.jianshu.com/?t=https://mp.weixin.qq.com/s/AZFrqL9dnlgA6Vt2sVhxIw&quot; target=&quot;_blank&quot; _href=&quot;https://link.jianshu.com/?t=https://mp.weixin.qq.com/s/AZFrqL9dnlgA6Vt2sVhxIw&quot;&gt;你可能需要为你的 APP 适配 iOS 11&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;a href=&quot;https://link.jianshu.com/?t=http://blog.csdn.net/dangyalingengjia/article/details/77964582&quot; target=&quot;_blank&quot; _href=&quot;https://link.jianshu.com/?t=http://blog.csdn.net/dangyalingengjia/article/details/77964582&quot;&gt;升级到XCode9（BaseSDK:iOS11）的各种坑 持续更新中&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;a href=&quot;https://link.jianshu.com/?t=https://mp.weixin.qq.com/s/2iG4oGzEGm9zQaDOsRgwLA&quot; target=&quot;_blank&quot; _href=&quot;https://link.jianshu.com/?t=https://mp.weixin.qq.com/s/2iG4oGzEGm9zQaDOsRgwLA&quot;&gt;一个iOS 11BUG的发现、定位和解决&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;&lt;a href=&quot;https://www.jianshu.com/p/d40d701889a6&quot; target=&quot;_blank&quot; _href=&quot;https://www.jianshu.com/p/d40d701889a6&quot;&gt;如何判断设备是否为iPhone X，iOS获取设备型号的方法&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/div&gt;</content><author><name>Peichao Yuan</name></author><summary type="html">iOS 11, Xcode 9 的一些适配问题</summary></entry><entry><title type="html">恬静人生</title><link href="http://localhost:4000/2018/05/01/tian-jing-ren-sheng/" rel="alternate" type="text/html" title="恬静人生" /><published>2018-05-01T00:00:00+08:00</published><updated>2018-05-01T00:00:00+08:00</updated><id>http://localhost:4000/2018/05/01/tian-jing-ren-sheng</id><content type="html" xml:base="http://localhost:4000/2018/05/01/tian-jing-ren-sheng/">&lt;p&gt;喜欢在宁静的清晨为自己泡上一杯去火茶；&lt;/p&gt;
+
+&lt;p&gt;十粒莲子芯；五瓣金银花；两颗胖大海；&lt;/p&gt;
+
+&lt;p&gt;四粒冰糖；三块槐菊；一杯温水；&lt;/p&gt;
+
+&lt;p&gt;再用心加入一份希望和热情；&lt;/p&gt;
+
+&lt;p&gt;一杯缓解疼痛的浓茶；&lt;/p&gt;
+
+&lt;p&gt;一天新的开始。&lt;/p&gt;
+
+&lt;p&gt;拉开窗帘，&lt;/p&gt;
+
+&lt;p&gt;或是缕缕晨曦钻入房间；&lt;/p&gt;
+
+&lt;p&gt;或是点点雨露悄然滴落；&lt;/p&gt;
+
+&lt;p&gt;或是丝丝凉风拂面而过；&lt;/p&gt;
+
+&lt;p&gt;或是声声鸟声划过枝头。&lt;/p&gt;
+
+&lt;p&gt;喜欢这种宁静。&lt;/p&gt;
+
+&lt;p&gt;享受这种宁静。&lt;/p&gt;
+
+&lt;p&gt;喜欢出门前在书架上拿一本喜欢的书装入包中，&lt;/p&gt;
+
+&lt;p&gt;即便白天忙碌无暇阅读，&lt;/p&gt;
+
+&lt;p&gt;但沉淀的感觉时刻提醒着自己仍在赶路。&lt;/p&gt;
+
+&lt;p&gt;喜欢塞着耳机穿梭在这个城市。&lt;/p&gt;
+
+&lt;p&gt;乔治温斯顿的卡农；&lt;/p&gt;
+
+&lt;p&gt;梁静茹的丝路；&lt;/p&gt;
+
+&lt;p&gt;车水马龙游客交织的西湖广场；&lt;/p&gt;
+
+&lt;p&gt;古色古香静谧幽僻的运河古街；&lt;/p&gt;
+
+&lt;p&gt;绿树成荫的柳浪闻莺里，&lt;/p&gt;
+
+&lt;p&gt;那对相互搀扶蹒跚向前的老夫妇；&lt;/p&gt;
+
+&lt;p&gt;那个在婴儿车里熟睡的小baby；&lt;/p&gt;
+
+&lt;p&gt;那对席地而坐相偎相依的情侣；&lt;/p&gt;
+
+&lt;p&gt;都是这个城市里美好的风景。&lt;/p&gt;
+
+&lt;p&gt;蓦然发现，&lt;/p&gt;
+
+&lt;p&gt;仿佛实现了学生时代那个很简单的梦想：&lt;/p&gt;
+
+&lt;p&gt;骑着单车，带着梦想和希望，&lt;/p&gt;
+
+&lt;p&gt;用自己的努力，&lt;/p&gt;
+
+&lt;p&gt;在一个现代的城市里过着简单而有意义的生活。&lt;/p&gt;
+
+&lt;p&gt;一个典型的自由主义者。&lt;/p&gt;
+
+&lt;p&gt;我给你工作。&lt;/p&gt;
+
+&lt;p&gt;你给我饭吃。&lt;/p&gt;
+
+&lt;p&gt;仅此而已。&lt;/p&gt;
+
+&lt;p&gt;那么多条条框框的生活，&lt;/p&gt;
+
+&lt;p&gt;低效而繁琐。&lt;/p&gt;
+
+&lt;p&gt;一个纯粹的理想主义者。&lt;/p&gt;
+
+&lt;p&gt;每天都有思考价值与人生。&lt;/p&gt;
+
+&lt;p&gt;思考我自己如何去实现。&lt;/p&gt;
+
+&lt;p&gt;不后悔，不后退。&lt;/p&gt;
+
+&lt;p&gt;在前方，在路上。&lt;/p&gt;
+
+&lt;p&gt;一个很怀旧的人。&lt;/p&gt;
+
+&lt;p&gt;喜欢在相册里回忆过去；&lt;/p&gt;
+
+&lt;p&gt;相册里的照片总是多个备份。&lt;/p&gt;
+
+&lt;p&gt;老的时候，夕阳落幕的时候，&lt;/p&gt;
+
+&lt;p&gt;两杯香茗，两把藤椅；&lt;/p&gt;
+
+&lt;p&gt;一箱老照片；&lt;/p&gt;
+
+&lt;p&gt;激动。感慨。欣慰。满足。&lt;/p&gt;
+
+&lt;p&gt;足以让自己老泪纵横。&lt;/p&gt;
+
+&lt;p&gt;那，是人生最美的时刻之一。&lt;/p&gt;
+
+&lt;p&gt;喜欢阿甘正传那一段段经典的台词。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;life was like a box of chocolates, you never know what you are going to get ……&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;相信明天， 会无限精彩。&lt;/p&gt;</content><author><name>Peichao Yuan</name></author><summary type="html">喜欢在宁静的清晨为自己泡上一杯去火茶；</summary></entry></feed>
