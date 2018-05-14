@@ -63,6 +63,3 @@ DocumentRoot "/Users/jason/Sites"
 > sudo codesign -f -d -s - /Applications/Alfred\ 3.app/Contents/Frameworks/Alfred\ Framework.framework/Versions/A/Alfred\ Framework
 
 
-[返回](./)
-
-
