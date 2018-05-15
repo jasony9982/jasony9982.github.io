@@ -5,6 +5,7 @@ categories: blog
 description: 一首小诗
 keywords: 未来, 生活
 ---   
+> 一首小诗，愿你我共享    
 
 喜欢在宁静的清晨为自己泡上一杯去火茶；
 
