@@ -6,7 +6,7 @@ description: gitPage 初始化，一些细节的备份
 keywords: Gitpage, apatch
 ---   
 
-记录一些常见问题的细节备份   
+> 记录一些常见问题的细节备份   
 
 ### 遇到恼人的权限安装或者删除的权限问题的时候在命令中添加`-n /usr/local/bin` 即可执行
 ```
