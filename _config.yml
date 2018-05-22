@@ -40,10 +40,6 @@ navs:
     label: 维基
 
   -
-   href: /love/
-    label: 链接
-
-  -
     href: /about/
     label: 关于
 
