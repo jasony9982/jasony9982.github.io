@@ -9,6 +9,8 @@ keywords:  cpu, gpu, asdk
 
 > 这篇文章会非常详细的分析 iOS 界面构建中的各种性能问题以及对应的解决思路，同时给出一个开源的微博列表实现，通过实际的代码展示如何构建流畅的交互。
 
+原文作者为YYKit的作者，对他在知识面以及开源界的领导力和影响表示钦佩！
+
 原文链接：[https://blog.ibireme.com/2015/11/12/smooth_user_interfaces_for_ios](https://blog.ibireme.com/2015/11/12/smooth_user_interfaces_for_ios)
 
 <p>Index<br />
