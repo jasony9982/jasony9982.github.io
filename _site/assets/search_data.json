@@ -131,6 +131,13 @@
     } ,
   
     {
+      "title"    : "iOS 保持界面流畅的技巧",
+      "category" : "tech",
+      
+      "url"      : "http://localhost:4000/2018/05/22/smooth_user_interfaces_for_ios/"
+    } ,
+  
+    {
       "title"    : "Axure",
       "category" : "tools",
       
