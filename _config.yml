@@ -18,7 +18,8 @@ side_bar_repo_limit: 5
 author: Peichao Yuan
 organization: 杭州开课啦教育科技有限公司
 organization_url: http://www.kaike.la
-github_username: jasony9982
+github_username: jasony9982    
+github_name: 叫我袁先生    
 location: Hangzhou, China
 email: jason_yuen@126.com
 
@@ -38,9 +39,9 @@ navs:
     href: /wiki/
     label: 维基
 
-  #-
-   # href: /links/
-    #label: 链接
+  -
+   href: /love/
+    label: 链接
 
   -
     href: /about/

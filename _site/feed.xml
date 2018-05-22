@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2018-05-22T23:33:10+08:00</updated><id>http://localhost:4000/</id><title type="html">仙居茶客</title><subtitle>袁培超的个人博客</subtitle><author><name>Peichao Yuan</name></author><entry><title type="html">iOS 保持界面流畅的技巧</title><link href="http://localhost:4000/2018/05/22/smooth_user_interfaces_for_ios/" rel="alternate" type="text/html" title="iOS 保持界面流畅的技巧" /><published>2018-05-22T00:00:00+08:00</published><updated>2018-05-22T00:00:00+08:00</updated><id>http://localhost:4000/2018/05/22/smooth_user_interfaces_for_ios</id><content type="html" xml:base="http://localhost:4000/2018/05/22/smooth_user_interfaces_for_ios/">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.7.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2018-05-23T00:10:45+08:00</updated><id>http://localhost:4000/</id><title type="html">仙居茶客</title><subtitle>袁培超的个人博客</subtitle><author><name>Peichao Yuan</name></author><entry><title type="html">iOS 保持界面流畅的技巧</title><link href="http://localhost:4000/2018/05/22/smooth_user_interfaces_for_ios/" rel="alternate" type="text/html" title="iOS 保持界面流畅的技巧" /><published>2018-05-22T00:00:00+08:00</published><updated>2018-05-22T00:00:00+08:00</updated><id>http://localhost:4000/2018/05/22/smooth_user_interfaces_for_ios</id><content type="html" xml:base="http://localhost:4000/2018/05/22/smooth_user_interfaces_for_ios/">&lt;blockquote&gt;
   &lt;p&gt;这篇文章会非常详细的分析 iOS 界面构建中的各种性能问题以及对应的解决思路，同时给出一个开源的微博列表实现，通过实际的代码展示如何构建流畅的交互。&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -286,7 +286,179 @@ V2.0 增加了更多布局相关的代码，ComponentKit 团队为此贡献很�
 &lt;/ol&gt;
 
 &lt;hr /&gt;
-&lt;p&gt;转载&lt;/p&gt;</content><author><name>Peichao Yuan</name></author><summary type="html">这里是一只小狐狸和小兔子的故事</summary></entry><entry><title type="html">睡前小故事二-下篇</title><link href="http://localhost:4000/2018/05/18/shui-qian-xiao-gu-shi-er-xia/" rel="alternate" type="text/html" title="睡前小故事二-下篇" /><published>2018-05-18T00:00:00+08:00</published><updated>2018-05-18T00:00:00+08:00</updated><id>http://localhost:4000/2018/05/18/shui-qian-xiao-gu-shi-er-xia</id><content type="html" xml:base="http://localhost:4000/2018/05/18/shui-qian-xiao-gu-shi-er-xia/">&lt;blockquote&gt;
+&lt;p&gt;转载&lt;/p&gt;</content><author><name>Peichao Yuan</name></author><summary type="html">这里是一只小狐狸和小兔子的故事</summary></entry><entry><title type="html">私有库创建</title><link href="http://localhost:4000/2018/05/19/podSpec/" rel="alternate" type="text/html" title="私有库创建" /><published>2018-05-19T00:00:00+08:00</published><updated>2018-05-19T00:00:00+08:00</updated><id>http://localhost:4000/2018/05/19/podSpec</id><content type="html" xml:base="http://localhost:4000/2018/05/19/podSpec/">&lt;blockquote&gt;
+  &lt;p&gt;cocoaPods 公有库和私有库的创建&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h1 id=&quot;cocoapodspods-公有库创建&quot;&gt;cocoapodsPods 公有库创建&lt;/h1&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;pod lib create KKLPush&lt;/li&gt;
+  &lt;li&gt;添加文件到 classes中&lt;/li&gt;
+  &lt;li&gt;执行 pod install&lt;/li&gt;
+  &lt;li&gt;推送到远端&lt;/li&gt;
+  &lt;li&gt;添加 tag&lt;/li&gt;
+  &lt;li&gt;检查有效性
+    &lt;blockquote&gt;
+      &lt;p&gt;pod lib lint –allow-warnings&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;blockquote&gt;
+      &lt;p&gt;pod trunk push –allow-warnings&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h1 id=&quot;开课啦cocoapods私有库创建教程&quot;&gt;开课啦CocoaPods私有库创建教程&lt;/h1&gt;
+
+&lt;h3 id=&quot;创建私有-spec-repo&quot;&gt;创建私有 Spec Repo&lt;/h3&gt;
+
+&lt;p&gt;先来说第一步，什么是Spec Repo？它是所有的Pods的一个索引，就是一个容器，所有公开的Pods都在这个里面，它实际是一个Git仓库remote端在GitHub上，但是当你使用了Cocoapods后它会被clone到本地的~/.cocoapods/repos目录下，可以进入到这个目录看到master文件夹就是这个官方的Spec Repo了。&lt;/p&gt;
+
+&lt;p&gt;因此我们需要创建一个类似于master的私有Spec Repo。我们可以创建一个私有的git仓库当做我们自己的Spec Repo。（已经在公司的gitlab上创建好了名叫&lt;a href=&quot;http://git.mistong.com/ios-framework/mistong-repo&quot;&gt;mistong-repo&lt;/a&gt;的私有Spec Repo）&lt;/p&gt;
+
+&lt;p&gt;创建完成之后在Terminal中执行如下命令&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pod repo add mistong ssh://git@git.mistong.com:10022/ios-framework/mistong-repo.git
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;此时如果成功的话进入到~/.cocoapods/repos目录下就可以看到 &lt;code class=&quot;highlighter-rouge&quot;&gt;mistong&lt;/code&gt; 这个目录了。至此我们的pod就能在本地search到 &lt;code class=&quot;highlighter-rouge&quot;&gt;mistong&lt;/code&gt; 里申明的所有库了。&lt;/p&gt;
+
+&lt;h3 id=&quot;创建cocoapods私有库&quot;&gt;创建CocoaPods私有库&lt;/h3&gt;
+
+&lt;p&gt;参考&lt;a href=&quot;http://www.jianshu.com/p/c6c227c0c221&quot;&gt;CocoaPods建立私有仓库 spec repo&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;现在我们来创建一个私有库，以KKLKit为例。&lt;/p&gt;
+
+&lt;p&gt;在Terminal中执行如下命令&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pod lib create KKLKit
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;之后他会问你几个问题，1. 选择开发语言 2.是否需要一个例子工程；3.选择一个测试框架；4.是否基于View测试；5.类的前缀；这几个问题的具体介绍可以去看官方文档，我这里选择的是1.ObjC  ;2.Yes；3.None；4.None；4.KKL。 问完这几个问题他会自动执行pod install命令创建项目并生成依赖。&lt;/p&gt;
+
+&lt;p&gt;_Pods.xcodeproj文件在这里并没有什么作用，可以直接删掉。 其中KKLKit目录仅包含了KKLKit的源文件及图片资源等文件，Example目录则包含了KKLKit相关的demo。我们在编写KKLKit的源码的时候，直接在Example的工程中进行。&lt;/p&gt;
+
+&lt;p&gt;现在我们进入Example目录，打开.workspace文件。
+可以看到，Development Pods目录下的KKLKit目录就是我们的库源码。可以直接修改该目录下的代码。需要注意的是，如果需要在KKLKit中增加或删除文件，在增加文件后，需要在Example的根目录，执行一下&lt;code class=&quot;highlighter-rouge&quot;&gt;pod install &lt;/code&gt; 命令。&lt;/p&gt;
+
+&lt;h3 id=&quot;发布私有库&quot;&gt;发布私有库&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;编辑podspec文件，发布版本库前，需要先配置好podspec文件，具体模板可以参考&lt;a href=&quot;http://git.mistong.com/ios-framework/CKKit/blob/master/CKKit.podspec&quot;&gt;CKKit.podspec&lt;/a&gt;。
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#
+# Be sure to run `pod lib lint CKKit.podspec' to ensure this is a
+# valid spec before submitting.
+#
+# Any lines starting with a # are optional, but their use is encouraged
+# To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html
+#
+Pod::Spec.new do |s|
+s.name             = 'CKKit'
+s.version          = '0.1.11'
+s.summary          = 'CKKit是一个工具类的库'
+# This description is used to generate tags and improve search results.
+#   * Think: What does it do? Why did you write it? What is the focus?
+#   * Try to keep it short, snappy and to the point.
+#   * Write the description between the DESC delimiters below.
+#   * Finally, don't worry about the indent, CocoaPods strips it!
+s.description      = &amp;lt;&amp;lt;-DESC
+CKKit是一个工具类的库，主要包含容器类、通知、数据源相关的管理类及工具类
+                     DESC
+s.homepage         = 'http://git.mistong.com/ios-framework/CKKit'
+# s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
+s.license          = { :type =&amp;gt; 'MIT', :file =&amp;gt; 'LICENSE' }
+s.author           = { 'jiangjunchen' =&amp;gt; 'jiangjunchen@kaike.la' }
+s.source           = { :git =&amp;gt; 'ssh://git@git.mistong.com:10022/ios-framework/CKKit.git', :tag =&amp;gt; s.version.to_s }
+# s.social_media_url = 'https://twitter.com/&amp;lt;TWITTER_USERNAME&amp;gt;'
+# s.module_map = 'CKKit/CKKit.modulemap'
+s.ios.deployment_target = '8.0'
+s.source_files = 'CKKit/Classes/CKKit.h'
+s.subspec 'Base' do |ss|
+    ss.source_files = 'CKKit/Classes/Base/**/*'
+end
+s.subspec 'UIKit' do |ss|
+    ss.source_files = 'CKKit/Classes/UIKit/**/*'
+    ss.dependency 'CKKit/Base'
+end
+# s.source_files = 'CKKit/Classes/**/*'
+# s.resource_bundles = {
+#   'CKKit' =&amp;gt; ['CKKit/Assets/*.png']
+# }
+# s.public_header_files = 'Pod/Classes/**/*.h'
+# s.frameworks = 'UIKit', 'MapKit'
+# s.dependency 'AFNetworking', '~&amp;gt; 2.3'
+end
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;上传后保存会有目录结构&lt;br /&gt;
+&lt;img src=&quot;http://note.youdao.com/yws/res/1892/WEBRESOURCEba18671e1fe66bf403fecade8204e488&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;git commit后，需要打tag，并push到远程。如&lt;/p&gt;
+
+    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git tag &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;first release&quot;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;0.1.0&quot;&lt;/span&gt; 
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git push &lt;span class=&quot;nt&quot;&gt;--tags&lt;/span&gt;     &lt;span class=&quot;c&quot;&gt;#推送tag到远端仓库&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;验证私有库的正确性&lt;/p&gt;
+
+    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pod lib lint &lt;span class=&quot;nt&quot;&gt;--allow-warnings&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+
+    &lt;p&gt;验证成功&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;向Spec Repo提交podspec。 向我们的私有Spec Repo提交podspec只需要一个命令&lt;/p&gt;
+
+    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pod repo push mistong ./KKLKit.podspec &lt;span class=&quot;nt&quot;&gt;--allow-warnings&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+    &lt;p&gt;其中，&lt;code class=&quot;highlighter-rouge&quot;&gt;mistong&lt;/code&gt;就是我们的私有Spec Repo，&lt;code class=&quot;highlighter-rouge&quot;&gt;./KKLKit.podspec&lt;/code&gt;则是我们私有库的描述文件路径&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;注如果podspec的依赖包含你自己的私有库那么验证命令后面要填写你所依赖的那个私有库的连接地址和cocoapods的默认地址&quot;&gt;注：如果podspec的依赖包含你自己的私有库。那么验证命令后面要填写你所依赖的那个私有库的连接地址和cocoapods的默认地址&lt;/h4&gt;
+
+&lt;p&gt;如：$ pod lib lint –sources=’ssh://git@git.mistong.com:10022/ios-framework/mistong-repo.git,https://github.com/CocoaPods/Specs’ –use-libraries –allow-warnings&lt;/p&gt;
+
+&lt;h3 id=&quot;安装私有库&quot;&gt;安装私有库&lt;/h3&gt;
+
+&lt;p&gt;安装私有库需要在Podfile文件顶部申明一下我们的私有Repo Spec地址，以及pod公共的Repo Spec地址。 再在podfile中通过&lt;code class=&quot;highlighter-rouge&quot;&gt;pod 'CKKit', '~&amp;gt; 0.0.1'&lt;/code&gt;来申明私有库&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'ssh://git@git.mistong.com:10022/ios-framework/mistong-repo.git'&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'https://github.com/CocoaPods/Specs.git'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;关于resources&quot;&gt;&lt;a href=&quot;http://blog.xianqu.org/2015/08/pod-resources/&quot;&gt;关于Resources&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;新版的cocoapods推荐在podspec使用&lt;code class=&quot;highlighter-rouge&quot;&gt;resource_bundle&lt;/code&gt;方式引用资源文件：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;s.resource_bundle = {'LibName' =&amp;gt; ['LibName/*.png']}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;理论上一个 bundle 里可以有一个 asset catalog。Xcode 最后会把它们编译成 &lt;code class=&quot;highlighter-rouge&quot;&gt;Assets.car&lt;/code&gt; 文件。但是使用&lt;code class=&quot;highlighter-rouge&quot;&gt;resource_bundle&lt;/code&gt;这种方式对&lt;code class=&quot;highlighter-rouge&quot;&gt;Image.xcassets&lt;/code&gt;支持不太好，会出现找不到图片的情况。所以增对图片资源，要么不使用xcassets，直接将图片放到文件目录中；要么使用podspec的resources方式添加图片的xcassets。&lt;/p&gt;
+
+&lt;p&gt;我这里推荐采用resources方式添加图片资源，因为pdf格式的图片需要放到xcassets中才能直接使用：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;s.resources = 'XHXUser/Assets/**/*'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;那么在代码中可以用如下方式获取pod库中的图片资源:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;NSBundle *bundle = [NSBundle bundleForClass:[XHXUserAPI class]];
+UIImage *image = [UIImage imageNamed:@&quot;LoginLogo&quot; inBundle:bundle compatibleWithTraitCollection:nil];
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;当然，你可以在pod库内部创建一个宏&lt;code class=&quot;highlighter-rouge&quot;&gt;ModuleImage&lt;/code&gt;，用于获取私有库内部的图片:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;// 根据图片名，获取模块内部的图片
+#define ModuleImage(name) [UIImage imageNamed:(name) inBundle:[NSBundle bundleForClass:[self class]] compatibleWithTraitCollection:nil]
+&lt;/code&gt;&lt;/pre&gt;</content><author><name>Peichao Yuan</name></author><summary type="html">cocoaPods 公有库和私有库的创建</summary></entry><entry><title type="html">睡前小故事二-下篇</title><link href="http://localhost:4000/2018/05/18/shui-qian-xiao-gu-shi-er-xia/" rel="alternate" type="text/html" title="睡前小故事二-下篇" /><published>2018-05-18T00:00:00+08:00</published><updated>2018-05-18T00:00:00+08:00</updated><id>http://localhost:4000/2018/05/18/shui-qian-xiao-gu-shi-er-xia</id><content type="html" xml:base="http://localhost:4000/2018/05/18/shui-qian-xiao-gu-shi-er-xia/">&lt;blockquote&gt;
   &lt;p&gt;接上篇&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -544,248 +716,7 @@ V2.0 增加了更多布局相关的代码，ComponentKit 团队为此贡献很�
 
 &lt;p&gt;他什么都没说&lt;/p&gt;
 
-&lt;p&gt;拉着黑鲨的鳍游向了广阔的远方&lt;/p&gt;</content><author><name>Peichao Yuan</name></author><summary type="html">今天的故事背景是在大海里,讲述一只小海豚和一只大黑鲨的故事</summary></entry><entry><title type="html">思维游戏</title><link href="http://localhost:4000/2018/05/13/si-wei-you-xi/" rel="alternate" type="text/html" title="思维游戏" /><published>2018-05-13T00:00:00+08:00</published><updated>2018-05-13T00:00:00+08:00</updated><id>http://localhost:4000/2018/05/13/si-wei-you-xi</id><content type="html" xml:base="http://localhost:4000/2018/05/13/si-wei-you-xi/">&lt;blockquote&gt;
-  &lt;p&gt;这里讲述了无聊闲暇时候的天马星空，忘记摘抄自哪里了，感觉和自己的某些时候真的好像，相信大家也经历过&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;在从前那些没有手机游戏和电子书的日子里。我在漫长的旅途中只能靠思维游戏打发时间。&lt;/p&gt;
-
-&lt;p&gt;所谓”思维游戏”，是我给自己的胡思乱想起的学名。这种游戏很简单，先设想一个原点——我突然得到了十亿美元，突然得到了校花的青睐，突然写出一部震惊古今的小说——然后开始想象我接下来采取的行动。后来年纪大了，我知道这种东西有一个通俗的说法，叫做意淫。&lt;/p&gt;
-
-&lt;p&gt;我最喜欢的一个命题，是”如果我在沙漠中间发现一整块十吨重的黄金，该怎么办？”。通常的想法是，我靠我可发财了。但其实从这个命题到真正发财，还有一段距离。你要如何把黄金真正转换成自己的私有财富？这种想象要尽可能细致，细致到每一个动作，要考虑到每一个可能产生的意外。你会发现，事情没想象中那么简单。首先这十吨黄金你要如何运输出去？要不要找人？怎么保密？如何分成？如果你决心单干，那还要想租用哪些设备和车辆，如何在沙漠中一个人把十吨黄金切割成可运输大小。返回城镇以后，你如何卸货，如何存放？如何遮人耳目？接下来黄金你要如何处理？一古脑卖出去会造成市场波动，被国家觉察，私下分批次处理如何操作？怎么找买家？钱是分开存在哪家银行？怎么避开税务部门？如何跟家里人解释突然有这么一大笔钱？哪些亲戚和朋友要告诉哪些要保密……其实是件很复杂的事，规划起来很花功夫。这个思维游戏我已经玩了好多年，现在已经有了一整套详尽的计划，而且随时根据现实科技发展来调整，万事俱备，只欠真的发现十吨黄金了。&lt;/p&gt;
-
-&lt;p&gt;除此以外，还可以琢磨人。我坐地铁的时候，经常人多拥挤不堪，不光没有座位，连伸开手臂拿手机或PSP的空间都没有。在这种情况之下，唯一能动的，只有脑子。我会仔细观察周围的人，幻想他们身上隐藏的故事和他们离开地铁以后的人生。&lt;/p&gt;
-
-&lt;p&gt;比如右边那位衣着朴素、身形瘦小的大叔。也许他离开地铁以后，找到一个没人的地方换上紧身衣，把内裤套在头上，然后飞过整个城市，在大街小巷除暴安良。&lt;/p&gt;
-
-&lt;p&gt;再比如左边这位戴着棒球帽、穿着阿迪达斯运动套装的白皙少年。他是一个外星人，为了能够深入了解地球人的生活，特意化装成，他也许已经完成了自己的使命，正踏上返回母星的旅程，可因为棒球队那个美丽的女经理殷切的眼神，他还是毅然决然地留在了地球。&lt;/p&gt;
-
-&lt;p&gt;而我们坐的这部地铁，谁又能保证它下一站抵达的是普通地铁站而不是这个城市底下巨大的军事要塞呢。在要塞里有一门利用灵魂作炮弹的大炮，炮口对准月球。每一个不幸的地铁乘客都要被送进炮口，把灵魂贡献出来去轰击月球上的兔子恶魔。&lt;/p&gt;
-
-&lt;p&gt;甚至这部地铁本身，或许并不是地铁，而是一条龙。它偶尔坠落到了地面，被捡到的科学家改造成了一节地铁，每天都在暗无天日的隧道里穿行，把乘客们从城市的一端运往另外一端，没有一天休息。只有在晚上十一点地铁停运之后，这条龙才能停下疲惫的身躯，从隧道的洞口爬出去，昂起头来看一眼暌违已久的天空。&lt;/p&gt;
-
-&lt;p&gt;我就这么坐在地铁里，在城市的腹心穿行，眼睛看着乘客，脑子里琢磨着他们的种种不靠谱故事，一直到达我旅途的终点。&lt;/p&gt;
-
-&lt;p&gt;这种”思维游戏”有一个分支种类，叫做”想象图书”。玩的时候，我会闭上眼睛。开始虚构一本从来没存在的书，想象它的主题、内容简介、封面图案、名家书评、作者的创作意图和轶事，尽量煞有其事地补充除了内容以外的各类细节，使之丰满如真实存在一般，然后把它放到我想象中的书架上去。以后再碰到无聊的时候，我就信手抽出一本，靠回忆来阅读。&lt;/p&gt;
-
-&lt;p&gt;比如我曾幻想路遥在写《平凡的世界》时，在稿纸背面写下了另外一个故事。故事的主角是落水的田晓霞，她死里逃生却遭遇失忆，被人救起以后开始了另外一段人生。几十年后她和孙少平在街头偶遇，擦肩而过，互不相识。可惜的是，这份稿纸被编辑忽略了，一直丢在存稿箱中。直到几年后路遥去世，一个新毕业的编辑打算准备纪念专题，无意中把存稿箱打翻在地，这才发现稿纸背面的秘密。不过老编辑认为这个故事会损害《平凡的世界》的形象，于是只印制了一千册，赠送给路遥的亲朋好友，书的封面是个巨大的漩涡。其中一本，不知如何流落到了桂林临桂中学，扉页还盖有临桂中学图书室藏的红章。里面的借书卡里只有一条借阅记录，是个女孩借走的。她比我大一届，喜欢穿米黄色的毛衣，宿舍里的台灯用粉红色的纸罩着&lt;/p&gt;
-
-&lt;p&gt;我书架上的另外一本书，叫做《廷巴克图故事集》。在1822年，英国组织了一支探险队，从的黎波里出发，计划南穿撒哈拉沙漠，寻找尼日尔河与尼罗河的源头。探险队中有一名人类学家，叫做塞缪尔·欧内斯特，他抵达廷巴克图之后，注意到当地图阿雷格人部族存在着一种奇特的风俗：酋长在死后会被部落巫师敲破脑壳，接出脑浆，掺杂着蜂蜜和椰汁给被选中的孩童服用。那个孩子就会流利地背诵出一段故事，然后一生都无法发出声音。这些故事巧妙而有寓意，被认为是神的意旨，所以不允许被记录下来。于是欧内斯特花了十三年时间，等待每一个类似的仪式，偷偷记下了几十个故事。可惜他的行为最终被土著人发现，惨遭杀害。他死后，脑浆也被土著人用同样的方式制成饮料，盛放在他生前用过的水壶里。&lt;/p&gt;
-
-&lt;p&gt;后来该部落被殖民者屠戮一空，这个水壶与记录手稿被送回葡萄牙，作为遗物交还给欧内斯特的遗孀。这份手稿一直沉睡在旧物箱里。直到有一天欧内斯特的孙子无意中打开水壶，喝下他爷爷的脑浆，当着家人的面高声说出这些手稿的来历。欧内斯特的工作才公之于世。手稿于1923年结集出版，命名为《廷巴克图故事集》，版税用来为欧内斯特的孙子治疗哑病。该书的第一版中文版在1973年的台湾出版，但销路不佳，名人里只有邓丽君买过一本，并遗落在雅加达的旅馆里……&lt;/p&gt;
-
-&lt;p&gt;这样编下去的话，简直没完没了，可以从一本书想象到一个家族史乃至国家史。在构思这些东西的时候，时间会如风车一样过得飞快。等车抵达终点，我所获得的愉悦感,和看一本书差不多。&lt;/p&gt;</content><author><name>Peichao Yuan</name></author><summary type="html">这里讲述了无聊闲暇时候的天马星空，忘记摘抄自哪里了，感觉和自己的某些时候真的好像，相信大家也经历过</summary></entry><entry><title type="html">眼中的自己</title><link href="http://localhost:4000/2018/05/11/myself/" rel="alternate" type="text/html" title="眼中的自己" /><published>2018-05-11T00:00:00+08:00</published><updated>2018-05-11T00:00:00+08:00</updated><id>http://localhost:4000/2018/05/11/myself</id><content type="html" xml:base="http://localhost:4000/2018/05/11/myself/">&lt;blockquote&gt;
-  &lt;p&gt;人的一生最大的敌人是自己，最难看清的也是自己。&lt;/p&gt;
-
-  &lt;p&gt;借对自己的审视，借别人口中的评价，更好地了解自己，做更好的自己。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&quot;优点&quot;&gt;优点&lt;/h3&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;
-    &lt;p&gt;可以信任&lt;/p&gt;
-
-    &lt;p&gt;一般来讲，一件事情如果我应下来，那就会尽力去朝着想要的结果而努力。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;热爱阅读&lt;/p&gt;
-
-    &lt;p&gt;不管有用的没用的，我总是在阅读着，也在进行着一些相应的思考。&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&quot;缺点&quot;&gt;缺点&lt;/h3&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;
-    &lt;p&gt;拖延症&lt;/p&gt;
-
-    &lt;p&gt;任由事情在自己手上堆积，找各种借口不去开始，即使那件事情只需要两分钟就能处理完。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;必须症&lt;/p&gt;
-
-    &lt;p&gt;对自己身上客观存在的一些东西没有无条件地接受；对别人的行为和这个世界的样子存在期待，一旦不符合期待便会焦虑和自我挫败。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;含糊症&lt;/p&gt;
-
-    &lt;p&gt;别人来问我什么问题的时候总是回答得很快，有时候给出的并不是经过思考后最合理最确定的回答，后来反应和发觉过来只好再去补救。其实别人没那么急，略等几秒在脑海里找到确定的答案再答复相对是效率更高的方式，这并不会显得我没有准备和欠思考，实际上它比我立即给出一个不准确的答案而后来再推翻或补充要好。&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;</content><author><name>Peichao Yuan</name></author><summary type="html">人的一生最大的敌人是自己，最难看清的也是自己。 借对自己的审视，借别人口中的评价，更好地了解自己，做更好的自己。</summary></entry><entry><title type="html">私有库创建</title><link href="http://localhost:4000/2018/05/06/podSpec/" rel="alternate" type="text/html" title="私有库创建" /><published>2018-05-06T00:00:00+08:00</published><updated>2018-05-06T00:00:00+08:00</updated><id>http://localhost:4000/2018/05/06/podSpec</id><content type="html" xml:base="http://localhost:4000/2018/05/06/podSpec/">&lt;blockquote&gt;
-  &lt;p&gt;cocoaPods 公有库和私有库的创建&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h1 id=&quot;cocoapodspods-公有库创建&quot;&gt;cocoapodsPods 公有库创建&lt;/h1&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;pod lib create KKLPush&lt;/li&gt;
-  &lt;li&gt;添加文件到 classes中&lt;/li&gt;
-  &lt;li&gt;执行 pod install&lt;/li&gt;
-  &lt;li&gt;推送到远端&lt;/li&gt;
-  &lt;li&gt;添加 tag&lt;/li&gt;
-  &lt;li&gt;检查有效性
-    &lt;blockquote&gt;
-      &lt;p&gt;pod lib lint –allow-warnings&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;blockquote&gt;
-      &lt;p&gt;pod trunk push –allow-warnings&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h1 id=&quot;开课啦cocoapods私有库创建教程&quot;&gt;开课啦CocoaPods私有库创建教程&lt;/h1&gt;
-
-&lt;h3 id=&quot;创建私有-spec-repo&quot;&gt;创建私有 Spec Repo&lt;/h3&gt;
-
-&lt;p&gt;先来说第一步，什么是Spec Repo？它是所有的Pods的一个索引，就是一个容器，所有公开的Pods都在这个里面，它实际是一个Git仓库remote端在GitHub上，但是当你使用了Cocoapods后它会被clone到本地的~/.cocoapods/repos目录下，可以进入到这个目录看到master文件夹就是这个官方的Spec Repo了。&lt;/p&gt;
-
-&lt;p&gt;因此我们需要创建一个类似于master的私有Spec Repo。我们可以创建一个私有的git仓库当做我们自己的Spec Repo。（已经在公司的gitlab上创建好了名叫&lt;a href=&quot;http://git.mistong.com/ios-framework/mistong-repo&quot;&gt;mistong-repo&lt;/a&gt;的私有Spec Repo）&lt;/p&gt;
-
-&lt;p&gt;创建完成之后在Terminal中执行如下命令&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pod repo add mistong ssh://git@git.mistong.com:10022/ios-framework/mistong-repo.git
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;此时如果成功的话进入到~/.cocoapods/repos目录下就可以看到 &lt;code class=&quot;highlighter-rouge&quot;&gt;mistong&lt;/code&gt; 这个目录了。至此我们的pod就能在本地search到 &lt;code class=&quot;highlighter-rouge&quot;&gt;mistong&lt;/code&gt; 里申明的所有库了。&lt;/p&gt;
-
-&lt;h3 id=&quot;创建cocoapods私有库&quot;&gt;创建CocoaPods私有库&lt;/h3&gt;
-
-&lt;p&gt;参考&lt;a href=&quot;http://www.jianshu.com/p/c6c227c0c221&quot;&gt;CocoaPods建立私有仓库 spec repo&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;现在我们来创建一个私有库，以KKLKit为例。&lt;/p&gt;
-
-&lt;p&gt;在Terminal中执行如下命令&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pod lib create KKLKit
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;之后他会问你几个问题，1. 选择开发语言 2.是否需要一个例子工程；3.选择一个测试框架；4.是否基于View测试；5.类的前缀；这几个问题的具体介绍可以去看官方文档，我这里选择的是1.ObjC  ;2.Yes；3.None；4.None；4.KKL。 问完这几个问题他会自动执行pod install命令创建项目并生成依赖。&lt;/p&gt;
-
-&lt;p&gt;_Pods.xcodeproj文件在这里并没有什么作用，可以直接删掉。 其中KKLKit目录仅包含了KKLKit的源文件及图片资源等文件，Example目录则包含了KKLKit相关的demo。我们在编写KKLKit的源码的时候，直接在Example的工程中进行。&lt;/p&gt;
-
-&lt;p&gt;现在我们进入Example目录，打开.workspace文件。
-可以看到，Development Pods目录下的KKLKit目录就是我们的库源码。可以直接修改该目录下的代码。需要注意的是，如果需要在KKLKit中增加或删除文件，在增加文件后，需要在Example的根目录，执行一下&lt;code class=&quot;highlighter-rouge&quot;&gt;pod install &lt;/code&gt; 命令。&lt;/p&gt;
-
-&lt;h3 id=&quot;发布私有库&quot;&gt;发布私有库&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;编辑podspec文件，发布版本库前，需要先配置好podspec文件，具体模板可以参考&lt;a href=&quot;http://git.mistong.com/ios-framework/CKKit/blob/master/CKKit.podspec&quot;&gt;CKKit.podspec&lt;/a&gt;。
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#
-# Be sure to run `pod lib lint CKKit.podspec' to ensure this is a
-# valid spec before submitting.
-#
-# Any lines starting with a # are optional, but their use is encouraged
-# To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html
-#
-Pod::Spec.new do |s|
-s.name             = 'CKKit'
-s.version          = '0.1.11'
-s.summary          = 'CKKit是一个工具类的库'
-# This description is used to generate tags and improve search results.
-#   * Think: What does it do? Why did you write it? What is the focus?
-#   * Try to keep it short, snappy and to the point.
-#   * Write the description between the DESC delimiters below.
-#   * Finally, don't worry about the indent, CocoaPods strips it!
-s.description      = &amp;lt;&amp;lt;-DESC
-CKKit是一个工具类的库，主要包含容器类、通知、数据源相关的管理类及工具类
-                     DESC
-s.homepage         = 'http://git.mistong.com/ios-framework/CKKit'
-# s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
-s.license          = { :type =&amp;gt; 'MIT', :file =&amp;gt; 'LICENSE' }
-s.author           = { 'jiangjunchen' =&amp;gt; 'jiangjunchen@kaike.la' }
-s.source           = { :git =&amp;gt; 'ssh://git@git.mistong.com:10022/ios-framework/CKKit.git', :tag =&amp;gt; s.version.to_s }
-# s.social_media_url = 'https://twitter.com/&amp;lt;TWITTER_USERNAME&amp;gt;'
-# s.module_map = 'CKKit/CKKit.modulemap'
-s.ios.deployment_target = '8.0'
-s.source_files = 'CKKit/Classes/CKKit.h'
-s.subspec 'Base' do |ss|
-    ss.source_files = 'CKKit/Classes/Base/**/*'
-end
-s.subspec 'UIKit' do |ss|
-    ss.source_files = 'CKKit/Classes/UIKit/**/*'
-    ss.dependency 'CKKit/Base'
-end
-# s.source_files = 'CKKit/Classes/**/*'
-# s.resource_bundles = {
-#   'CKKit' =&amp;gt; ['CKKit/Assets/*.png']
-# }
-# s.public_header_files = 'Pod/Classes/**/*.h'
-# s.frameworks = 'UIKit', 'MapKit'
-# s.dependency 'AFNetworking', '~&amp;gt; 2.3'
-end
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;上传后保存会有目录结构&lt;br /&gt;
-&lt;img src=&quot;http://note.youdao.com/yws/res/1892/WEBRESOURCEba18671e1fe66bf403fecade8204e488&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;git commit后，需要打tag，并push到远程。如&lt;/p&gt;
-
-    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git tag &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;first release&quot;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;0.1.0&quot;&lt;/span&gt; 
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git push &lt;span class=&quot;nt&quot;&gt;--tags&lt;/span&gt;     &lt;span class=&quot;c&quot;&gt;#推送tag到远端仓库&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;验证私有库的正确性&lt;/p&gt;
-
-    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pod lib lint &lt;span class=&quot;nt&quot;&gt;--allow-warnings&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-
-    &lt;p&gt;验证成功&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;向Spec Repo提交podspec。 向我们的私有Spec Repo提交podspec只需要一个命令&lt;/p&gt;
-
-    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pod repo push mistong ./KKLKit.podspec &lt;span class=&quot;nt&quot;&gt;--allow-warnings&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-    &lt;p&gt;其中，&lt;code class=&quot;highlighter-rouge&quot;&gt;mistong&lt;/code&gt;就是我们的私有Spec Repo，&lt;code class=&quot;highlighter-rouge&quot;&gt;./KKLKit.podspec&lt;/code&gt;则是我们私有库的描述文件路径&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;注如果podspec的依赖包含你自己的私有库那么验证命令后面要填写你所依赖的那个私有库的连接地址和cocoapods的默认地址&quot;&gt;注：如果podspec的依赖包含你自己的私有库。那么验证命令后面要填写你所依赖的那个私有库的连接地址和cocoapods的默认地址&lt;/h4&gt;
-
-&lt;p&gt;如：$ pod lib lint –sources=’ssh://git@git.mistong.com:10022/ios-framework/mistong-repo.git,https://github.com/CocoaPods/Specs’ –use-libraries –allow-warnings&lt;/p&gt;
-
-&lt;h3 id=&quot;安装私有库&quot;&gt;安装私有库&lt;/h3&gt;
-
-&lt;p&gt;安装私有库需要在Podfile文件顶部申明一下我们的私有Repo Spec地址，以及pod公共的Repo Spec地址。 再在podfile中通过&lt;code class=&quot;highlighter-rouge&quot;&gt;pod 'CKKit', '~&amp;gt; 0.0.1'&lt;/code&gt;来申明私有库&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'ssh://git@git.mistong.com:10022/ios-framework/mistong-repo.git'&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'https://github.com/CocoaPods/Specs.git'&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;关于resources&quot;&gt;&lt;a href=&quot;http://blog.xianqu.org/2015/08/pod-resources/&quot;&gt;关于Resources&lt;/a&gt;&lt;/h3&gt;
-
-&lt;p&gt;新版的cocoapods推荐在podspec使用&lt;code class=&quot;highlighter-rouge&quot;&gt;resource_bundle&lt;/code&gt;方式引用资源文件：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;s.resource_bundle = {'LibName' =&amp;gt; ['LibName/*.png']}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;理论上一个 bundle 里可以有一个 asset catalog。Xcode 最后会把它们编译成 &lt;code class=&quot;highlighter-rouge&quot;&gt;Assets.car&lt;/code&gt; 文件。但是使用&lt;code class=&quot;highlighter-rouge&quot;&gt;resource_bundle&lt;/code&gt;这种方式对&lt;code class=&quot;highlighter-rouge&quot;&gt;Image.xcassets&lt;/code&gt;支持不太好，会出现找不到图片的情况。所以增对图片资源，要么不使用xcassets，直接将图片放到文件目录中；要么使用podspec的resources方式添加图片的xcassets。&lt;/p&gt;
-
-&lt;p&gt;我这里推荐采用resources方式添加图片资源，因为pdf格式的图片需要放到xcassets中才能直接使用：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;s.resources = 'XHXUser/Assets/**/*'
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;那么在代码中可以用如下方式获取pod库中的图片资源:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;NSBundle *bundle = [NSBundle bundleForClass:[XHXUserAPI class]];
-UIImage *image = [UIImage imageNamed:@&quot;LoginLogo&quot; inBundle:bundle compatibleWithTraitCollection:nil];
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;当然，你可以在pod库内部创建一个宏&lt;code class=&quot;highlighter-rouge&quot;&gt;ModuleImage&lt;/code&gt;，用于获取私有库内部的图片:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot;&gt;// 根据图片名，获取模块内部的图片
-#define ModuleImage(name) [UIImage imageNamed:(name) inBundle:[NSBundle bundleForClass:[self class]] compatibleWithTraitCollection:nil]
-&lt;/code&gt;&lt;/pre&gt;</content><author><name>Peichao Yuan</name></author><summary type="html">cocoaPods 公有库和私有库的创建</summary></entry><entry><title type="html">GitPage, apatch</title><link href="http://localhost:4000/2018/05/03/apatch-gitpage/" rel="alternate" type="text/html" title="GitPage, apatch" /><published>2018-05-03T00:00:00+08:00</published><updated>2018-05-03T00:00:00+08:00</updated><id>http://localhost:4000/2018/05/03/apatch-gitpage</id><content type="html" xml:base="http://localhost:4000/2018/05/03/apatch-gitpage/">&lt;blockquote&gt;
+&lt;p&gt;拉着黑鲨的鳍游向了广阔的远方&lt;/p&gt;</content><author><name>Peichao Yuan</name></author><summary type="html">今天的故事背景是在大海里,讲述一只小海豚和一只大黑鲨的故事</summary></entry><entry><title type="html">GitPage, apatch</title><link href="http://localhost:4000/2018/05/14/apatch-gitpage/" rel="alternate" type="text/html" title="GitPage, apatch" /><published>2018-05-14T00:00:00+08:00</published><updated>2018-05-14T00:00:00+08:00</updated><id>http://localhost:4000/2018/05/14/apatch-gitpage</id><content type="html" xml:base="http://localhost:4000/2018/05/14/apatch-gitpage/">&lt;blockquote&gt;
   &lt;p&gt;记录一些常见问题的细节备份&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -836,7 +767,76 @@ DocumentRoot &quot;/Users/jason/Sites&quot;
 
 &lt;blockquote&gt;
   &lt;p&gt;sudo codesign -f -d -s - /Applications/Alfred\ 3.app/Contents/Frameworks/Alfred\ Framework.framework/Versions/A/Alfred\ Framework&lt;/p&gt;
-&lt;/blockquote&gt;</content><author><name>Peichao Yuan</name></author><summary type="html">记录一些常见问题的细节备份</summary></entry><entry><title type="html">Xcode 9 iOS 11适配</title><link href="http://localhost:4000/2018/05/02/ios-11-Xcode/" rel="alternate" type="text/html" title="Xcode 9 iOS 11适配" /><published>2018-05-02T00:00:00+08:00</published><updated>2018-05-02T00:00:00+08:00</updated><id>http://localhost:4000/2018/05/02/ios-11-Xcode</id><content type="html" xml:base="http://localhost:4000/2018/05/02/ios-11-Xcode/">&lt;blockquote&gt;
+&lt;/blockquote&gt;</content><author><name>Peichao Yuan</name></author><summary type="html">记录一些常见问题的细节备份</summary></entry><entry><title type="html">眼中的自己</title><link href="http://localhost:4000/2018/05/11/myself/" rel="alternate" type="text/html" title="眼中的自己" /><published>2018-05-11T00:00:00+08:00</published><updated>2018-05-11T00:00:00+08:00</updated><id>http://localhost:4000/2018/05/11/myself</id><content type="html" xml:base="http://localhost:4000/2018/05/11/myself/">&lt;blockquote&gt;
+  &lt;p&gt;人的一生最大的敌人是自己，最难看清的也是自己。&lt;/p&gt;
+
+  &lt;p&gt;借对自己的审视，借别人口中的评价，更好地了解自己，做更好的自己。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;优点&quot;&gt;优点&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;可以信任&lt;/p&gt;
+
+    &lt;p&gt;一般来讲，一件事情如果我应下来，那就会尽力去朝着想要的结果而努力。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;热爱阅读&lt;/p&gt;
+
+    &lt;p&gt;不管有用的没用的，我总是在阅读着，也在进行着一些相应的思考。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;缺点&quot;&gt;缺点&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;拖延症&lt;/p&gt;
+
+    &lt;p&gt;任由事情在自己手上堆积，找各种借口不去开始，即使那件事情只需要两分钟就能处理完。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;必须症&lt;/p&gt;
+
+    &lt;p&gt;对自己身上客观存在的一些东西没有无条件地接受；对别人的行为和这个世界的样子存在期待，一旦不符合期待便会焦虑和自我挫败。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;含糊症&lt;/p&gt;
+
+    &lt;p&gt;别人来问我什么问题的时候总是回答得很快，有时候给出的并不是经过思考后最合理最确定的回答，后来反应和发觉过来只好再去补救。其实别人没那么急，略等几秒在脑海里找到确定的答案再答复相对是效率更高的方式，这并不会显得我没有准备和欠思考，实际上它比我立即给出一个不准确的答案而后来再推翻或补充要好。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;</content><author><name>Peichao Yuan</name></author><summary type="html">人的一生最大的敌人是自己，最难看清的也是自己。 借对自己的审视，借别人口中的评价，更好地了解自己，做更好的自己。</summary></entry><entry><title type="html">思维游戏</title><link href="http://localhost:4000/2018/05/04/si-wei-you-xi/" rel="alternate" type="text/html" title="思维游戏" /><published>2018-05-04T00:00:00+08:00</published><updated>2018-05-04T00:00:00+08:00</updated><id>http://localhost:4000/2018/05/04/si-wei-you-xi</id><content type="html" xml:base="http://localhost:4000/2018/05/04/si-wei-you-xi/">&lt;blockquote&gt;
+  &lt;p&gt;这里讲述了无聊闲暇时候的天马星空，忘记摘抄自哪里了，感觉和自己的某些时候真的好像，相信大家也经历过&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;在从前那些没有手机游戏和电子书的日子里。我在漫长的旅途中只能靠思维游戏打发时间。&lt;/p&gt;
+
+&lt;p&gt;所谓”思维游戏”，是我给自己的胡思乱想起的学名。这种游戏很简单，先设想一个原点——我突然得到了十亿美元，突然得到了校花的青睐，突然写出一部震惊古今的小说——然后开始想象我接下来采取的行动。后来年纪大了，我知道这种东西有一个通俗的说法，叫做意淫。&lt;/p&gt;
+
+&lt;p&gt;我最喜欢的一个命题，是”如果我在沙漠中间发现一整块十吨重的黄金，该怎么办？”。通常的想法是，我靠我可发财了。但其实从这个命题到真正发财，还有一段距离。你要如何把黄金真正转换成自己的私有财富？这种想象要尽可能细致，细致到每一个动作，要考虑到每一个可能产生的意外。你会发现，事情没想象中那么简单。首先这十吨黄金你要如何运输出去？要不要找人？怎么保密？如何分成？如果你决心单干，那还要想租用哪些设备和车辆，如何在沙漠中一个人把十吨黄金切割成可运输大小。返回城镇以后，你如何卸货，如何存放？如何遮人耳目？接下来黄金你要如何处理？一古脑卖出去会造成市场波动，被国家觉察，私下分批次处理如何操作？怎么找买家？钱是分开存在哪家银行？怎么避开税务部门？如何跟家里人解释突然有这么一大笔钱？哪些亲戚和朋友要告诉哪些要保密……其实是件很复杂的事，规划起来很花功夫。这个思维游戏我已经玩了好多年，现在已经有了一整套详尽的计划，而且随时根据现实科技发展来调整，万事俱备，只欠真的发现十吨黄金了。&lt;/p&gt;
+
+&lt;p&gt;除此以外，还可以琢磨人。我坐地铁的时候，经常人多拥挤不堪，不光没有座位，连伸开手臂拿手机或PSP的空间都没有。在这种情况之下，唯一能动的，只有脑子。我会仔细观察周围的人，幻想他们身上隐藏的故事和他们离开地铁以后的人生。&lt;/p&gt;
+
+&lt;p&gt;比如右边那位衣着朴素、身形瘦小的大叔。也许他离开地铁以后，找到一个没人的地方换上紧身衣，把内裤套在头上，然后飞过整个城市，在大街小巷除暴安良。&lt;/p&gt;
+
+&lt;p&gt;再比如左边这位戴着棒球帽、穿着阿迪达斯运动套装的白皙少年。他是一个外星人，为了能够深入了解地球人的生活，特意化装成，他也许已经完成了自己的使命，正踏上返回母星的旅程，可因为棒球队那个美丽的女经理殷切的眼神，他还是毅然决然地留在了地球。&lt;/p&gt;
+
+&lt;p&gt;而我们坐的这部地铁，谁又能保证它下一站抵达的是普通地铁站而不是这个城市底下巨大的军事要塞呢。在要塞里有一门利用灵魂作炮弹的大炮，炮口对准月球。每一个不幸的地铁乘客都要被送进炮口，把灵魂贡献出来去轰击月球上的兔子恶魔。&lt;/p&gt;
+
+&lt;p&gt;甚至这部地铁本身，或许并不是地铁，而是一条龙。它偶尔坠落到了地面，被捡到的科学家改造成了一节地铁，每天都在暗无天日的隧道里穿行，把乘客们从城市的一端运往另外一端，没有一天休息。只有在晚上十一点地铁停运之后，这条龙才能停下疲惫的身躯，从隧道的洞口爬出去，昂起头来看一眼暌违已久的天空。&lt;/p&gt;
+
+&lt;p&gt;我就这么坐在地铁里，在城市的腹心穿行，眼睛看着乘客，脑子里琢磨着他们的种种不靠谱故事，一直到达我旅途的终点。&lt;/p&gt;
+
+&lt;p&gt;这种”思维游戏”有一个分支种类，叫做”想象图书”。玩的时候，我会闭上眼睛。开始虚构一本从来没存在的书，想象它的主题、内容简介、封面图案、名家书评、作者的创作意图和轶事，尽量煞有其事地补充除了内容以外的各类细节，使之丰满如真实存在一般，然后把它放到我想象中的书架上去。以后再碰到无聊的时候，我就信手抽出一本，靠回忆来阅读。&lt;/p&gt;
+
+&lt;p&gt;比如我曾幻想路遥在写《平凡的世界》时，在稿纸背面写下了另外一个故事。故事的主角是落水的田晓霞，她死里逃生却遭遇失忆，被人救起以后开始了另外一段人生。几十年后她和孙少平在街头偶遇，擦肩而过，互不相识。可惜的是，这份稿纸被编辑忽略了，一直丢在存稿箱中。直到几年后路遥去世，一个新毕业的编辑打算准备纪念专题，无意中把存稿箱打翻在地，这才发现稿纸背面的秘密。不过老编辑认为这个故事会损害《平凡的世界》的形象，于是只印制了一千册，赠送给路遥的亲朋好友，书的封面是个巨大的漩涡。其中一本，不知如何流落到了桂林临桂中学，扉页还盖有临桂中学图书室藏的红章。里面的借书卡里只有一条借阅记录，是个女孩借走的。她比我大一届，喜欢穿米黄色的毛衣，宿舍里的台灯用粉红色的纸罩着&lt;/p&gt;
+
+&lt;p&gt;我书架上的另外一本书，叫做《廷巴克图故事集》。在1822年，英国组织了一支探险队，从的黎波里出发，计划南穿撒哈拉沙漠，寻找尼日尔河与尼罗河的源头。探险队中有一名人类学家，叫做塞缪尔·欧内斯特，他抵达廷巴克图之后，注意到当地图阿雷格人部族存在着一种奇特的风俗：酋长在死后会被部落巫师敲破脑壳，接出脑浆，掺杂着蜂蜜和椰汁给被选中的孩童服用。那个孩子就会流利地背诵出一段故事，然后一生都无法发出声音。这些故事巧妙而有寓意，被认为是神的意旨，所以不允许被记录下来。于是欧内斯特花了十三年时间，等待每一个类似的仪式，偷偷记下了几十个故事。可惜他的行为最终被土著人发现，惨遭杀害。他死后，脑浆也被土著人用同样的方式制成饮料，盛放在他生前用过的水壶里。&lt;/p&gt;
+
+&lt;p&gt;后来该部落被殖民者屠戮一空，这个水壶与记录手稿被送回葡萄牙，作为遗物交还给欧内斯特的遗孀。这份手稿一直沉睡在旧物箱里。直到有一天欧内斯特的孙子无意中打开水壶，喝下他爷爷的脑浆，当着家人的面高声说出这些手稿的来历。欧内斯特的工作才公之于世。手稿于1923年结集出版，命名为《廷巴克图故事集》，版税用来为欧内斯特的孙子治疗哑病。该书的第一版中文版在1973年的台湾出版，但销路不佳，名人里只有邓丽君买过一本，并遗落在雅加达的旅馆里……&lt;/p&gt;
+
+&lt;p&gt;这样编下去的话，简直没完没了，可以从一本书想象到一个家族史乃至国家史。在构思这些东西的时候，时间会如风车一样过得飞快。等车抵达终点，我所获得的愉悦感,和看一本书差不多。&lt;/p&gt;</content><author><name>Peichao Yuan</name></author><summary type="html">这里讲述了无聊闲暇时候的天马星空，忘记摘抄自哪里了，感觉和自己的某些时候真的好像，相信大家也经历过</summary></entry><entry><title type="html">Xcode 9 iOS 11适配</title><link href="http://localhost:4000/2018/05/02/ios-11-Xcode/" rel="alternate" type="text/html" title="Xcode 9 iOS 11适配" /><published>2018-05-02T00:00:00+08:00</published><updated>2018-05-02T00:00:00+08:00</updated><id>http://localhost:4000/2018/05/02/ios-11-Xcode</id><content type="html" xml:base="http://localhost:4000/2018/05/02/ios-11-Xcode/">&lt;blockquote&gt;
   &lt;p&gt;iOS 11, Xcode 9 的一些适配问题&lt;/p&gt;
 &lt;/blockquote&gt;
 
