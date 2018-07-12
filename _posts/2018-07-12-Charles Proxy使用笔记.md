@@ -25,9 +25,8 @@ Charles 是一款Mac上的HTTP代理服务器、HTTP监视器、反向代理服�
 
     1. SSL Proxying Settings
     ![](http://p1b3ifuoy.bkt.clouddn.com/2018-07-12-15313662795265.jpg)
-![](http://p1b3ifuoy.bkt.clouddn.com/2018-07-12-15313641652524.png)
-  1. 设置可用状态以及抓取端口信息
-  ![](http://p1b3ifuoy.bkt.clouddn.com/2018-07-12-15313642351905.png)
+    1. 设置可用状态以及抓取端口信息
+    ![](http://p1b3ifuoy.bkt.clouddn.com/2018-07-12-15313642351905.png)
 
 3. 设置手机证书
 ![](http://p1b3ifuoy.bkt.clouddn.com/2018-07-12-15313640315170.png)
