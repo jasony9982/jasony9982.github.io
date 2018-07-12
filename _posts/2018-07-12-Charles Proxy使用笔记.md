@@ -1,4 +1,10 @@
-# Charles Proxy使用笔记
+---
+layout: post
+title: Charles Proxy使用笔记
+categories: tech
+description:  Charles Proxy使用笔记
+keywords:  Charles 抓包 代理
+---       
 
 开这篇博文想要记录一下Charles的日常使用。
 
